@@ -9,7 +9,7 @@ const config: QuartzConfig = {
     enablePopovers: true,
     analytics: null,
     locale: "zh-CN",
-    baseUrl: "kimio-notes.pages.dev",
+    baseUrl: "ilo.hides.cc.cd",
     ignorePatterns: ["private", "templates", ".obsidian"],
     defaultDateType: "modified",
     theme: {
