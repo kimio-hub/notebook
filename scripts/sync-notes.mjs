@@ -34,13 +34,6 @@ async function loadSourceDir() {
   return undefined
 }
 
-const sourceDir = await loadSourceDir()
-
-if (!sourceDir) {
-  console.error("Missing SOURCE_NOTES_DIR. Copy .env.example to .env.local or export SOURCE_NOTES_DIR before running sync-notes.")
-  process.exit(1)
-}
-
 const normalize = (value) => value.replaceAll("\\", "/")
 const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
 
@@ -92,7 +85,16 @@ async function ensureFrontmatter(content, title) {
   return `---\ntitle: ${title}\n---\n\n${content}`
 }
 
-async function main() {
+async function hasMarkdownFiles(dir) {
+  try {
+    const files = await walk(dir)
+    return files.some((file) => file.toLowerCase().endsWith(".md"))
+  } catch {
+    return false
+  }
+}
+
+async function syncFromSource(sourceDir) {
   const config = await readConfig()
   const includeRules = config.include.map(globToRegExp)
   const excludeRules = (config.exclude ?? []).map(globToRegExp)
@@ -148,6 +150,23 @@ async function main() {
       console.warn(`- ${warning}`)
     }
   }
+}
+
+async function main() {
+  const sourceDir = await loadSourceDir()
+
+  if (sourceDir && (await hasMarkdownFiles(path.resolve(sourceDir)))) {
+    await syncFromSource(sourceDir)
+    return
+  }
+
+  if (await hasMarkdownFiles(outputRoot)) {
+    console.log("SOURCE_NOTES_DIR is unavailable. Using committed content/notes for build.")
+    return
+  }
+
+  console.error("Missing SOURCE_NOTES_DIR and content/notes is empty, so there is nothing to build.")
+  process.exit(1)
 }
 
 await main()
