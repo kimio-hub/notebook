@@ -1,0 +1,14 @@
+{
+  "include": [
+    "DEEP RL.md",
+    "GAE.md",
+    "GRPO.md",
+    "LLM basic.md",
+    "PPO.md",
+    "REACT.md",
+    "paper understanding/**/*.md"
+  ],
+  "exclude": [
+    ".claude/**"
+  ]
+}
