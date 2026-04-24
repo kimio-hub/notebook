@@ -1,14 +1,16 @@
 {
   "include": [
-    "DEEP RL.md",
-    "GAE.md",
-    "GRPO.md",
-    "LLM basic.md",
-    "PPO.md",
-    "REACT.md",
-    "paper understanding/**/*.md"
+    "**/*.md",
+    "**/*.png",
+    "**/*.jpg",
+    "**/*.jpeg",
+    "**/*.gif",
+    "**/*.webp",
+    "**/*.svg",
+    "**/*.pdf"
   ],
   "exclude": [
-    ".claude/**"
+    ".claude/**",
+    "photo.jpg"
   ]
 }

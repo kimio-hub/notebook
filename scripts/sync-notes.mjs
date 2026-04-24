@@ -100,9 +100,8 @@ async function syncFromSource(sourceDir) {
   const excludeRules = (config.exclude ?? []).map(globToRegExp)
   const sourceRoot = path.resolve(sourceDir)
   const allFiles = await walk(sourceRoot)
-  const markdownFiles = allFiles.filter((file) => file.toLowerCase().endsWith(".md"))
 
-  const selectedFiles = markdownFiles.filter((file) => {
+  const selectedFiles = allFiles.filter((file) => {
     const relative = normalize(path.relative(sourceRoot, file))
     const included = includeRules.some((rule) => rule.test(relative))
     const excluded = excludeRules.some((rule) => rule.test(relative))
@@ -113,6 +112,7 @@ async function syncFromSource(sourceDir) {
   await mkdir(outputRoot, { recursive: true })
 
   const publishedNames = new Map()
+  let markdownCount = 0
 
   for (const file of selectedFiles) {
     const relative = normalize(path.relative(sourceRoot, file))
@@ -120,17 +120,23 @@ async function syncFromSource(sourceDir) {
     const destinationDir = path.dirname(destination)
     await mkdir(destinationDir, { recursive: true })
 
-    const title = path.basename(file, path.extname(file))
-    const original = await readFile(file, "utf8")
-    const content = await ensureFrontmatter(original, title)
-    await writeFile(destination, content, "utf8")
+    if (file.toLowerCase().endsWith(".md")) {
+      const title = path.basename(file, path.extname(file))
+      const original = await readFile(file, "utf8")
+      const content = await ensureFrontmatter(original, title)
+      await writeFile(destination, content, "utf8")
+      publishedNames.set(title.toLowerCase(), relative)
+      markdownCount += 1
+      continue
+    }
 
-    publishedNames.set(title.toLowerCase(), relative)
+    await writeFile(destination, await readFile(file))
   }
 
   const warnings = []
+  const selectedMarkdownFiles = selectedFiles.filter((file) => file.toLowerCase().endsWith(".md"))
 
-  for (const file of selectedFiles) {
+  for (const file of selectedMarkdownFiles) {
     const relative = normalize(path.relative(sourceRoot, file))
     const content = await readFile(file, "utf8")
     const matches = content.matchAll(wikiLinkPattern)
@@ -143,7 +149,9 @@ async function syncFromSource(sourceDir) {
     }
   }
 
-  console.log(`Synced ${selectedFiles.length} markdown files to ${normalize(path.relative(siteRoot, outputRoot))}`)
+  console.log(
+    `Synced ${selectedFiles.length} files (${markdownCount} markdown) to ${normalize(path.relative(siteRoot, outputRoot))}`,
+  )
   if (warnings.length > 0) {
     console.warn("Unpublished wiki-link targets detected:")
     for (const warning of warnings) {
