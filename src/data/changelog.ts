@@ -13,6 +13,13 @@ export type ChangelogItem = {
 export const changelog: ChangelogItem[] = [
   {
     date: "2026-07-10",
+    title: "发布 GSM8K 单卡 RL 实验报告",
+    summary: "Qwen2.5-7B + GRPO 在 5090 上从 0.796 做到 0.866 的完整实验记录，已挂到项目页。",
+    type: "project",
+    href: "/projects/gsm8k-rl-5090/",
+  },
+  {
+    date: "2026-07-10",
     title: "新增项目页与知乎入口",
     summary: "上线项目作品集页面，接入知乎主页链接；首个公开项目为知乎专栏复盘。",
     type: "project",

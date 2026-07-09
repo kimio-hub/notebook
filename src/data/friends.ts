@@ -14,8 +14,8 @@ export const friends: Friend[] = [
   {
     name: "Fried's Blog",
     url: "https://www.friedcali.top/",
-    description: "旅行、项目与生活记录。",
-    tags: ["博客", "项目"],
+    description: "旅行、项目与生活记录。排版干净，更新勤快的个人博客。",
+    tags: ["博客", "项目", "友链"],
   },
 ]
 

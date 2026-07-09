@@ -14,4 +14,15 @@ const notes = defineCollection({
   }),
 })
 
-export const collections = { notes }
+const writeups = defineCollection({
+  loader: glob({ pattern: "**/*.md", base: "./src/content/writeups" }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string().optional(),
+    tags: z.array(z.string()).default([]),
+    date: z.coerce.date().optional(),
+    draft: z.boolean().default(false),
+  }),
+})
+
+export const collections = { notes, writeups }
