@@ -8,14 +8,26 @@ export type Friend = {
 
 /**
  * 友链列表 — 按需编辑本文件后重新构建即可。
- * avatar 可填图片 URL；不填则使用首字母占位。
+ * 当前同步自 Fried 站「友情链接」并保留 Fried 本人。
  */
 export const friends: Friend[] = [
   {
     name: "Fried's Blog",
     url: "https://www.friedcali.top/",
     description: "旅行、项目与生活记录。排版干净，更新勤快的个人博客。",
-    tags: ["博客", "项目", "友链"],
+    tags: ["博客", "项目"],
+  },
+  {
+    name: "soyo Ling 小站",
+    url: "https://www.soyoling.top/",
+    description: "杂记拾遗 · 来自 Fried 友链。",
+    tags: ["博客"],
+  },
+  {
+    name: "Skywalkjian",
+    url: "https://skywalkjian-site.vercel.app/",
+    description: "个人站点 · 来自 Fried 友链。",
+    tags: ["博客"],
   },
 ]
 
