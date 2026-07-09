@@ -1,10 +1,15 @@
 import { QuartzConfig } from "./quartz/cfg"
 import * as Plugin from "./quartz/plugins"
 
+/**
+ * Kimio's personal site — "Ink Garden"
+ * Warm parchment + deep ink + copper/teal accents.
+ * Editorial digital garden for RL / LLM notes.
+ */
 const config: QuartzConfig = {
   configuration: {
     pageTitle: "Kimio",
-    pageTitleSuffix: "",
+    pageTitleSuffix: " · 笔记",
     enableSPA: true,
     enablePopovers: true,
     analytics: null,
@@ -16,32 +21,32 @@ const config: QuartzConfig = {
       fontOrigin: "googleFonts",
       cdnCaching: true,
       typography: {
-        header: "Schibsted Grotesk",
-        body: "Source Sans Pro",
-        code: "IBM Plex Mono",
+        header: "Fraunces",
+        body: "Source Serif 4",
+        code: "JetBrains Mono",
       },
       colors: {
         lightMode: {
-          light: "#faf8f8",
-          lightgray: "#e5e5e5",
-          gray: "#b8b8b8",
-          darkgray: "#4e4e4e",
-          dark: "#2b2b2b",
-          secondary: "#3b5b7a",
-          tertiary: "#6c8e7b",
-          highlight: "rgba(143, 159, 169, 0.15)",
-          textHighlight: "#fff23688",
+          light: "#f6f1e7",
+          lightgray: "#e5dccb",
+          gray: "#9a8f7e",
+          darkgray: "#3f3a34",
+          dark: "#1c1915",
+          secondary: "#0f6b63",
+          tertiary: "#b45309",
+          highlight: "rgba(15, 107, 99, 0.10)",
+          textHighlight: "#f0c67488",
         },
         darkMode: {
-          light: "#161618",
-          lightgray: "#393639",
-          gray: "#646464",
-          darkgray: "#d4d4d4",
-          dark: "#ebebec",
-          secondary: "#8aa7bc",
-          tertiary: "#8db7a4",
-          highlight: "rgba(143, 159, 169, 0.15)",
-          textHighlight: "#b3aa0288",
+          light: "#12151a",
+          lightgray: "#2a3038",
+          gray: "#7a8494",
+          darkgray: "#d5d0c6",
+          dark: "#f0ebe3",
+          secondary: "#5ec4b6",
+          tertiary: "#e0a45a",
+          highlight: "rgba(94, 196, 182, 0.12)",
+          textHighlight: "#b4530988",
         },
       },
     },

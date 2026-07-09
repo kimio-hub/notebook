@@ -12,15 +12,15 @@
   "folderPages": {
     "": {
       "title": "全部笔记",
-      "description": "我的公开学习笔记都在这里，分为 [基础笔记](basics) 和 [论文精读](papers) 两个部分。可以用左侧搜索直接定位内容，页面右侧还能看到笔记之间的反向链接。"
+      "description": "<div class=\"home-about\">\n\n这里是我所有公开笔记的入口，大致分成两条线：\n\n- **[基础笔记](basics/)** — 把 Transformer、PPO、GRPO 等核心概念一块块钉牢\n- **[论文精读](papers/)** — 读完一篇，尽量讲清「研究什么、怎么做、为什么行」\n\n左侧可以展开目录，也可以直接用搜索定位。右侧的图谱能看见笔记之间的关联。\n\n</div>"
     },
     "basics": {
       "title": "基础笔记",
-      "description": "强化学习与大语言模型的基础概念：Transformer、PPO、GRPO、GAE、InfoNCE、ReAct……一块一块把地基打牢。"
+      "description": "<div class=\"home-about\">\n\n强化学习与大语言模型的**地基**：架构、目标函数、优化方法。目标不是堆概念，而是能用自己的话把一条链路讲顺。\n\n**建议阅读顺序：**\n\n1. [Transformer](Transformer) → 注意力与整体架构\n2. [Deep RL](Deep-RL) → RL 全景\n3. [PPO](PPO) · [GAE](GAE) · [GRPO](GRPO) → 策略优化\n4. [InfoNCE](InfoNCE) · [ReAct](ReAct) · [Diffusion](Diffusion) → 相邻工具箱\n\n</div>"
     },
     "papers": {
       "title": "论文精读",
-      "description": "论文阅读笔记：推理增强、开源大模型、多模态检索（CIR）、算法博弈论。每篇尽量讲清楚——研究什么、怎么做、为什么行。"
+      "description": "<div class=\"home-about\">\n\n每篇尽量回答三件事：**研究什么问题、方法怎么做、为什么有效**。也会记下我还没想通的点。\n\n**几条线索：**\n\n- **推理增强**：[CoT](CoT-Paper-Report) → [Self-Consistency](Self-Consistency-Paper-Report) → [Tree-of-Thoughts](Tree-of-Thoughts-Paper-Report)\n- **开源大模型**：[DeepSeek-V3](DeepSeek-V3)\n- **多模态 / CIR**：[CoLLM](CoLLM) · [OSrCIR](OSrCIR) · [MVFT-JI](MVFT-JI) · [Magma](Magma)\n- **RL / Agent**：[ReCALL](ReCALL) · [Social-R1](Social-R1) · [Agentic-R](Agentic-R) · [SAGE](SAGE)\n- **算法博弈论**：[Pacing Equilibria](Pacing-Equilibria)\n- **蒸馏**：[On-Policy Distillation](On-Policy-Distillation)\n\n</div>"
     }
   }
 }
