@@ -13,6 +13,13 @@ export type ChangelogItem = {
 export const changelog: ChangelogItem[] = [
   {
     date: "2026-07-10",
+    title: "新增项目页与知乎入口",
+    summary: "上线项目作品集页面，接入知乎主页链接；首个公开项目为知乎专栏复盘。",
+    type: "project",
+    href: "/projects/",
+  },
+  {
+    date: "2026-07-10",
     title: "个人站 2.0 上线",
     summary: "从笔记花园重构为完整个人网站：首页动态、笔记卡片、友链页、可视化更新时间线。移除 RSS。",
     type: "site",

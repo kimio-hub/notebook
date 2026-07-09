@@ -463,7 +463,8 @@ pre {
 
 .note-card,
 .friend-card,
-.update-card {
+.update-card,
+.project-card {
   display: flex;
   flex-direction: column;
   gap: 0.55rem;
@@ -476,9 +477,55 @@ pre {
   color: inherit;
 }
 
+.project-card {
+  background:
+    linear-gradient(160deg, color-mix(in srgb, var(--brand) 7%, transparent), transparent 50%),
+    var(--bg-elevated);
+}
+
+.project-card h3 {
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+.project-card h3 a {
+  color: var(--ink);
+}
+
+.project-card h3 a:hover {
+  color: var(--brand);
+}
+
+.project-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+.project-card .tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.project-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: auto;
+  padding-top: 0.5rem;
+}
+
+.project-actions .btn {
+  padding: 0.5rem 0.95rem;
+  font-size: 0.85rem;
+}
+
 a.note-card:hover,
 a.friend-card:hover,
-a.update-card:hover {
+a.update-card:hover,
+.project-card:hover {
   transform: translateY(-3px);
   border-color: color-mix(in srgb, var(--brand) 35%, var(--line));
   box-shadow: var(--shadow-hover);

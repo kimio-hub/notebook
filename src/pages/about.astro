@@ -32,19 +32,35 @@ const notes = await getPublishedNotes()
       </p>
       <div class="hero-actions" style="margin-top:1rem;">
         <a class="btn btn-primary" href="/notes/">阅读笔记</a>
+        <a class="btn btn-ghost" href="/projects/">项目</a>
         <a class="btn btn-ghost" href={site.github} target="_blank" rel="noopener noreferrer">GitHub</a>
+        {site.zhihu && (
+          <a class="btn btn-ghost" href={site.zhihu} target="_blank" rel="noopener noreferrer">知乎</a>
+        )}
         {site.email && (
           <a class="btn btn-ghost" href={`mailto:${site.email}`}>邮箱</a>
         )}
       </div>
-      {
-        site.email && (
-          <p style="margin-top:1rem;color:var(--muted);font-size:0.92rem;">
-            <strong style="color:var(--ink);">邮箱：</strong>
-            <a href={`mailto:${site.email}`}>{site.email}</a>
-          </p>
-        )
-      }
+      <div style="margin-top:1rem;color:var(--muted);font-size:0.92rem;display:grid;gap:0.35rem;">
+        {
+          site.email && (
+            <p style="margin:0;">
+              <strong style="color:var(--ink);">邮箱：</strong>
+              <a href={`mailto:${site.email}`}>{site.email}</a>
+            </p>
+          )
+        }
+        {
+          site.zhihu && (
+            <p style="margin:0;">
+              <strong style="color:var(--ink);">知乎：</strong>
+              <a href={site.zhihu} target="_blank" rel="noopener noreferrer">
+                {site.zhihu.replace(/^https?:\/\//, "")}
+              </a>
+            </p>
+          )
+        }
+      </div>
     </section>
   </div>
 
@@ -60,8 +76,9 @@ const notes = await getPublishedNotes()
         <li><strong>框架：</strong>Astro 静态站点，部署于 Cloudflare Pages</li>
         <li><strong>内容：</strong>本地笔记同步发布（基础 / 论文两条线）</li>
         <li><strong>动态：</strong>可视化更新时间线（站点里程碑 + 笔记改动）</li>
+        <li><strong>项目：</strong>见 <a href="/projects/">项目页</a></li>
         <li><strong>友链：</strong>见 <a href="/friends/">友链页</a></li>
-        <li><strong>不再提供 RSS</strong>，请直接关注「更新」页或 GitHub</li>
+        <li><strong>不再提供 RSS</strong>，请直接关注「更新」页或 GitHub / 知乎</li>
       </ul>
     </div>
   </section>
