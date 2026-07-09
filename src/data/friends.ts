@@ -14,36 +14,31 @@ export const friends: Friend[] = [
   {
     name: "Fried's Blog",
     url: "https://www.friedcali.top/",
-    description: "旅行、项目与生活记录。排版干净，更新勤快的个人博客。",
-    tags: ["博客", "项目"],
+    description: "旅行、项目与生活记录 · 东方er",
+    tags: ["博客", "项目  "],
   },
   {
     name: "soyo Ling 小站",
     url: "https://www.soyoling.top/",
-    description: "杂记拾遗 · 来自 Fried 友链。",
+    description: "杂记拾遗 · 文艺作家",
     tags: ["博客"],
   },
   {
     name: "Skywalkjian",
     url: "https://skywalkjian-site.vercel.app/",
-    description: "个人站点 · 来自 Fried 友链。",
+    description: "个人站点 · 未来大佬",
     tags: ["博客"],
   },
 ]
 
 export const friendLinkGuide = {
   title: "申请友链",
-  intro: "欢迎互换友链。本站优先与个人独立博客、学习笔记站交换。",
-  requirements: [
-    "有一定原创内容，可长期访问",
-    "内容健康，无大量广告或恶意脚本",
-    "最好已添加本站链接（可先申请后补）",
-  ],
+  intro: "欢迎互换友链。",
   mine: {
     name: "Kimio",
     url: "https://hides.cc.cd",
     description: "计算机 · RL / LLM 学习笔记与个人主页",
     avatar: "https://hides.cc.cd/avatar.jpg",
   },
-  contact: "通过邮箱或 GitHub 联系我即可。",
+  contact: "通过邮箱或 GitHub 联系我~",
 }
