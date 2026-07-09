@@ -13,6 +13,7 @@ const year = new Date().getFullYear()
     <nav aria-label="页脚导航">
       {nav.map((item) => <a href={item.href}>{item.label}</a>)}
       <a href={site.github} target="_blank" rel="noopener noreferrer">GitHub</a>
+      {site.email && <a href={`mailto:${site.email}`}>邮箱</a>}
     </nav>
   </div>
 </footer>

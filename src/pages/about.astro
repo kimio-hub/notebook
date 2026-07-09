@@ -33,7 +33,18 @@ const notes = await getPublishedNotes()
       <div class="hero-actions" style="margin-top:1rem;">
         <a class="btn btn-primary" href="/notes/">阅读笔记</a>
         <a class="btn btn-ghost" href={site.github} target="_blank" rel="noopener noreferrer">GitHub</a>
+        {site.email && (
+          <a class="btn btn-ghost" href={`mailto:${site.email}`}>邮箱</a>
+        )}
       </div>
+      {
+        site.email && (
+          <p style="margin-top:1rem;color:var(--muted);font-size:0.92rem;">
+            <strong style="color:var(--ink);">邮箱：</strong>
+            <a href={`mailto:${site.email}`}>{site.email}</a>
+          </p>
+        )
+      }
     </section>
   </div>
 

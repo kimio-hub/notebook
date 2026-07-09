@@ -44,9 +44,15 @@ function initial(name: string) {
   <section class="friend-guide">
     <h2>{friendLinkGuide.title}</h2>
     <p style="margin: 0; color: var(--ink-soft);">{friendLinkGuide.intro}</p>
-    <ul>
-      {friendLinkGuide.requirements.map((item) => <li>{item}</li>)}
-    </ul>
+    {
+      friendLinkGuide.requirements?.length ? (
+        <ul>
+          {friendLinkGuide.requirements.map((item) => (
+            <li>{item}</li>
+          ))}
+        </ul>
+      ) : null
+    }
 
     <p style="margin: 0 0 0.5rem; font-weight: 700; color: var(--ink);">本站信息</p>
     <div class="mine-card">
