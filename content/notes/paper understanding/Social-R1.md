@@ -1,5 +1,5 @@
 ---
-title: Social-R1 Towards Human-like Social Reasoning in LLMs
+title: Social-R1
 ---
 
 # Social-R1: Towards Human-like Social Reasoning in LLMs

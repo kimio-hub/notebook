@@ -1,5 +1,5 @@
 ---
-title: diffusion（初步）
+title: Diffusion（初步）
 ---
 
 # Diffusion 学习笔记（初步）

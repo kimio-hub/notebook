@@ -1,5 +1,5 @@
 ---
-title: DEEP RL
+title: Deep-RL
 ---
 
 # Deep RL 学习笔记

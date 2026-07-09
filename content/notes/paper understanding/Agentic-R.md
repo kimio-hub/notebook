@@ -1,5 +1,5 @@
 ---
-title: agentic -R
+title: Agentic-R
 ---
 
 # Agentic-R 论文理解笔记

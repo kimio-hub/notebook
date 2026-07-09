@@ -1,5 +1,5 @@
 ---
-title: Magma   A Foundation Model for Multimodal AI Agents
+title: Magma
 ---
 
 # Magma：A Foundation Model for Multimodal AI Agents

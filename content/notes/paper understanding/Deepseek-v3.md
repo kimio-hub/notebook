@@ -1,5 +1,5 @@
 ---
-title: Deepseek-v3
+title: DeepSeek-V3
 ---
 
 # DeepSeek-V3 学习笔记

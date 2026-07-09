@@ -1,5 +1,5 @@
 ---
-title: LLM basic
+title: LLM-Basic
 ---
 
 # LLM 基础学习笔记
