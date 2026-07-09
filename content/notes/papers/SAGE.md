@@ -1,5 +1,9 @@
 ---
-title: SAGE
+title: "SAGE"
+tags:
+  - retrieval
+  - agents
+  - benchmark
 ---
 
 # SAGE: Benchmarking and Improving Retrieval for Deep Research Agents

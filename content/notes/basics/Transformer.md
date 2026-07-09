@@ -1,8 +1,9 @@
 ---
-title: Transformer
+title: "Transformer 学习笔记"
+tags:
+  - llm
+  - transformer
 ---
-
-# Transformer 学习笔记
 
 ## 输入表示
 Transformer 的输入不是直接处理词本身，而是先把每个 token 映射成向量表示，再加入位置信息。

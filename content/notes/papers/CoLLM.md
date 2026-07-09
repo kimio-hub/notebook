@@ -1,5 +1,9 @@
 ---
-title: CoLLM
+title: "CoLLM"
+tags:
+  - cir
+  - multimodal
+  - llm
 ---
 
 # CoLLM: A Large Language Model for Composed Image Retrieval

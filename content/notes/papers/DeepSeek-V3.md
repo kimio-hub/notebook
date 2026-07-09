@@ -1,8 +1,10 @@
 ---
-title: DeepSeek-V3
+title: "DeepSeek-V3 学习笔记"
+tags:
+  - llm
+  - moe
+  - architecture
 ---
-
-# DeepSeek-V3 学习笔记
 
 DeepSeek-V3 可以看作是在 Transformer 基础上，对注意力机制、MoE 结构和训练目标做了进一步改造。
 

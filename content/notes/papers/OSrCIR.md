@@ -1,5 +1,9 @@
 ---
-title: OSrCIR
+title: "OSrCIR"
+tags:
+  - cir
+  - multimodal
+  - reasoning
 ---
 
 # Reason-before-Retrieve: One-Stage Reflective Chain-of-Thoughts for Training-Free Zero-Shot Composed Image Retrieval

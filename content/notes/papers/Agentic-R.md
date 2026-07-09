@@ -1,8 +1,10 @@
 ---
-title: Agentic-R
+title: "Agentic-R 论文理解笔记"
+tags:
+  - agents
+  - retrieval
+  - rl
 ---
-
-# Agentic-R 论文理解笔记
 
 ## 论文要解决什么问题
 这篇工作的核心目标，是让 deep research agent 不只是“会搜索”，而是能和检索模块形成互相促进的闭环。作者关注的问题是：在多轮 reasoning + query + retrieval + answer 的流程中，检索器和 agent 往往彼此制约，如果只单独优化其中一部分，整体效果未必最好。

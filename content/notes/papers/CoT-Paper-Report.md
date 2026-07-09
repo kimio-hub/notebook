@@ -1,8 +1,9 @@
 ---
-title: CoT-Paper-Report
+title: "CoT 论文小报告"
+tags:
+  - reasoning
+  - prompting
 ---
-
-# CoT 论文小报告
 
 ## Chain-of-Thought Prompting Elicits Reasoning in Large Language Models
 

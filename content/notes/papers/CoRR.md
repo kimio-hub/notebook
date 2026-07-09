@@ -1,5 +1,9 @@
 ---
-title: CoRR
+title: "CoRR"
+tags:
+  - cir
+  - multimodal
+  - reasoning
 ---
 
 # Reflection from Retrieval: MLLM-Guided Iterative Reasoning for Zero-Shot Composed Image Retrieval

@@ -1,5 +1,8 @@
 ---
-title: MVFT-JI
+title: "MVFT-JI"
+tags:
+  - cir
+  - multimodal
 ---
 
 # MLLM-Guided VLM Fine-Tuning with Joint Inference for Zero-Shot Composed Image Retrieval

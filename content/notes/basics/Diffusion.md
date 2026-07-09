@@ -1,8 +1,9 @@
 ---
-title: Diffusion（初步）
+title: "Diffusion 学习笔记（初步）"
+tags:
+  - diffusion
+  - generative-models
 ---
-
-# Diffusion 学习笔记（初步）
 
 ## 核心直觉
 扩散模型的基本思路可以概括为：

@@ -1,8 +1,10 @@
 ---
-title: ReAct
+title: "ReAct 学习笔记"
+tags:
+  - llm
+  - agents
+  - reasoning
 ---
-
-# ReAct 学习笔记
 
 ## 摘要
 ReAct（Reason + Act）强调让模型在任务过程中交替进行“思考（Thought）”与“行动（Action）”。它不是只在内部推理，也不是只与外部工具交互，而是把两者结合起来，形成“思考—行动—观察—再思考”的闭环。

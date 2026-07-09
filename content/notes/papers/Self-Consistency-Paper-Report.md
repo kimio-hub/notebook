@@ -1,8 +1,9 @@
 ---
-title: Self-Consistency-Paper-Report
+title: "Self-Consistency 论文小报告"
+tags:
+  - reasoning
+  - prompting
 ---
-
-# Self-Consistency 论文小报告
 
 ## Self-Consistency Improves Chain of Thought Reasoning in Language Models
 

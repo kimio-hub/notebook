@@ -1,8 +1,8 @@
 ---
-title: Deep-RL
+title: "Deep RL 学习笔记"
+tags:
+  - rl
 ---
-
-# Deep RL 学习笔记
 
 ## 摘要
 Deep RL 的目标是学习一个策略（policy），让智能体在与环境交互时获得尽可能大的累计回报。常见方法大致可以分为 value-based、policy-based 和 actor-critic 三类；其中 [[PPO]] 和 [[GRPO]] 都可以看作围绕策略优化展开的方法。

@@ -1,8 +1,9 @@
 ---
-title: GAE
+title: "GAE 学习笔记"
+tags:
+  - rl
+  - policy-optimization
 ---
-
-# GAE 学习笔记
 
 ## 摘要
 GAE（Generalized Advantage Estimation）是一种用于估计优势函数的方法，核心目标是平衡偏差（bias）和方差（variance）。它常与 [[PPO]] 搭配使用，用来给策略更新提供更稳定的 advantage 信号。

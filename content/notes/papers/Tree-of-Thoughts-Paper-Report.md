@@ -1,8 +1,10 @@
 ---
-title: Tree-of-Thoughts-Paper-Report
+title: "Tree of Thoughts 论文小报告"
+tags:
+  - reasoning
+  - prompting
+  - search
 ---
-
-# Tree of Thoughts 论文小报告
 
 ## Tree of Thoughts: Deliberate Problem Solving with Large Language Models
 

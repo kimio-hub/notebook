@@ -1,5 +1,8 @@
 ---
-title: ReCALL
+title: "ReCALL"
+tags:
+  - cir
+  - multimodal
 ---
 
 # ReCALL: Recalibrating Capability Degradation for MLLM-based Composed Image Retrieval

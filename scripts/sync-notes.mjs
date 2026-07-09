@@ -133,6 +133,19 @@ async function syncFromSource(sourceDir) {
     await writeFile(destination, await readFile(file))
   }
 
+  const folderPages = config.folderPages ?? {}
+  for (const [folder, page] of Object.entries(folderPages)) {
+    const targetDir = folder ? path.join(outputRoot, folder) : outputRoot
+    try {
+      await access(targetDir)
+    } catch {
+      console.warn(`folderPages: skipping "${folder}" because the folder was not synced`)
+      continue
+    }
+    const body = page.description ? `${page.description}\n` : ""
+    await writeFile(path.join(targetDir, "index.md"), `---\ntitle: ${page.title}\n---\n\n${body}`, "utf8")
+  }
+
   const warnings = []
   const selectedMarkdownFiles = selectedFiles.filter((file) => file.toLowerCase().endsWith(".md"))
 
