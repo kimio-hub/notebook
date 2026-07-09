@@ -1,9 +1,8 @@
-import { access, mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises"
+import { access, mkdir, readdir, readFile, rm, writeFile, stat } from "node:fs/promises"
 import path from "node:path"
 
 const siteRoot = path.resolve(import.meta.dirname, "..")
-const contentRoot = path.join(siteRoot, "content")
-const outputRoot = path.join(contentRoot, "notes")
+const outputRoot = path.join(siteRoot, "src", "content", "notes")
 const configPath = path.join(siteRoot, "publish.config.json")
 
 async function loadSourceDir() {
@@ -18,9 +17,7 @@ async function loadSourceDir() {
       const envContent = await readFile(envPath, "utf8")
       for (const line of envContent.split(/\r?\n/)) {
         const trimmed = line.trim()
-        if (!trimmed || trimmed.startsWith("#")) {
-          continue
-        }
+        if (!trimmed || trimmed.startsWith("#")) continue
         const [key, ...valueParts] = trimmed.split("=")
         if (key === "SOURCE_NOTES_DIR") {
           return valueParts.join("=").trim()
@@ -53,7 +50,7 @@ const globToRegExp = (pattern) => {
   return new RegExp(`^${escaped}$`)
 }
 
-const wikiLinkPattern = /\[\[([^\]|#]+)(?:#[^\]|]+)?(?:\|[^\]]+)?\]\]/g
+const wikiLinkPattern = /\[\[([^\]|#]+)(?:#[^\]|]+)?(?:\|([^\]]+))?\]\]/g
 
 async function readConfig() {
   return JSON.parse(await readFile(configPath, "utf8"))
@@ -69,20 +66,10 @@ async function walk(dir) {
       files.push(...(await walk(fullPath)))
       continue
     }
-    if (entry.isFile()) {
-      files.push(fullPath)
-    }
+    if (entry.isFile()) files.push(fullPath)
   }
 
   return files
-}
-
-async function ensureFrontmatter(content, title) {
-  if (content.startsWith("---\n")) {
-    return content
-  }
-
-  return `---\ntitle: ${title}\n---\n\n${content}`
 }
 
 async function hasMarkdownFiles(dir) {
@@ -92,6 +79,58 @@ async function hasMarkdownFiles(dir) {
   } catch {
     return false
   }
+}
+
+function formatDate(d) {
+  return d.toISOString().slice(0, 10)
+}
+
+function injectFrontmatter(content, extra) {
+  if (content.startsWith("---\n") || content.startsWith("---\r\n")) {
+    const end = content.indexOf("\n---", 4)
+    if (end === -1) return content
+    const fm = content.slice(4, end)
+    const body = content.slice(end + 4)
+    const lines = []
+    for (const [key, value] of Object.entries(extra)) {
+      const re = new RegExp(`^${key}\\s*:`, "m")
+      if (!re.test(fm)) {
+        if (Array.isArray(value)) {
+          lines.push(`${key}:`)
+          for (const item of value) lines.push(`  - ${item}`)
+        } else if (typeof value === "string") {
+          lines.push(`${key}: ${JSON.stringify(value)}`)
+        } else {
+          lines.push(`${key}: ${value}`)
+        }
+      }
+    }
+    if (lines.length === 0) return content
+    return `---\n${fm.trimEnd()}\n${lines.join("\n")}\n---${body}`
+  }
+
+  const title = extra.title ?? "Untitled"
+  const tags = extra.tags ?? []
+  const tagBlock = tags.length ? `tags:\n${tags.map((t) => `  - ${t}`).join("\n")}\n` : ""
+  return `---\ntitle: ${JSON.stringify(title)}\ncategory: ${extra.category}\ndate: ${extra.date}\n${tagBlock}---\n\n${content}`
+}
+
+function rewriteWikiLinks(content, publishedNames) {
+  return content.replace(wikiLinkPattern, (full, target, alias) => {
+    const key = target.trim().toLowerCase()
+    const rel = publishedNames.get(key)
+    const label = (alias ?? target).trim()
+    if (!rel) return label
+    // Astro content ids are lowercased in URLs
+    const slug = normalize(rel).replace(/\.md$/i, "").toLowerCase()
+    return `[${label}](/notes/${slug}/)`
+  })
+}
+
+function categoryFromRelative(relative) {
+  const top = normalize(relative).split("/")[0]
+  if (top === "basics" || top === "papers") return top
+  return "other"
 }
 
 async function syncFromSource(sourceDir) {
@@ -112,25 +151,42 @@ async function syncFromSource(sourceDir) {
   await mkdir(outputRoot, { recursive: true })
 
   const publishedNames = new Map()
+  const written = []
   let markdownCount = 0
 
   for (const file of selectedFiles) {
     const relative = normalize(path.relative(sourceRoot, file))
-    const destination = path.join(outputRoot, relative)
-    const destinationDir = path.dirname(destination)
-    await mkdir(destinationDir, { recursive: true })
+    // Lowercase paths so Windows case-folding won't create duplicate content ids
+    const relativeLower = relative.toLowerCase()
+    const destination = path.join(outputRoot, relativeLower)
+    await mkdir(path.dirname(destination), { recursive: true })
 
     if (file.toLowerCase().endsWith(".md")) {
-      const title = path.basename(file, path.extname(file))
+      const base = path.basename(file, path.extname(file))
       const original = await readFile(file, "utf8")
-      const content = await ensureFrontmatter(original, title)
-      await writeFile(destination, content, "utf8")
-      publishedNames.set(title.toLowerCase(), relative)
+      const st = await stat(file)
+      const category = categoryFromRelative(relative)
+      const withFm = injectFrontmatter(original, {
+        title: base,
+        category,
+        date: formatDate(st.mtime),
+        updated: formatDate(st.mtime),
+      })
+      await writeFile(destination, withFm, "utf8")
+      publishedNames.set(base.toLowerCase(), relativeLower)
+      written.push(destination)
       markdownCount += 1
       continue
     }
 
-    await writeFile(destination, await readFile(file))
+    // skip binary assets from notes source for the content collection
+  }
+
+  // second pass: rewrite wikilinks using full map
+  for (const destination of written) {
+    const content = await readFile(destination, "utf8")
+    const next = rewriteWikiLinks(content, publishedNames)
+    if (next !== content) await writeFile(destination, next, "utf8")
   }
 
   const folderPages = config.folderPages ?? {}
@@ -139,38 +195,22 @@ async function syncFromSource(sourceDir) {
     try {
       await access(targetDir)
     } catch {
-      console.warn(`folderPages: skipping "${folder}" because the folder was not synced`)
+      console.warn(`folderPages: skipping "${folder}"`)
       continue
     }
-    const body = page.description ? `${page.description}\n` : ""
-    await writeFile(path.join(targetDir, "index.md"), `---\ntitle: ${page.title}\n---\n\n${body}`, "utf8")
-  }
-
-  const warnings = []
-  const selectedMarkdownFiles = selectedFiles.filter((file) => file.toLowerCase().endsWith(".md"))
-
-  for (const file of selectedMarkdownFiles) {
-    const relative = normalize(path.relative(sourceRoot, file))
-    const content = await readFile(file, "utf8")
-    const matches = content.matchAll(wikiLinkPattern)
-
-    for (const match of matches) {
-      const target = match[1].trim().toLowerCase()
-      if (!publishedNames.has(target)) {
-        warnings.push(`${relative} -> [[${match[1].trim()}]]`)
-      }
-    }
+    // folder index pages are handled by Astro routes, not content collection
+    // still write a lightweight marker for local browsing if needed
+    const body = page.description ? String(page.description).replace(/<[^>]+>/g, "") : ""
+    await writeFile(
+      path.join(targetDir, "_folder.md"),
+      `---\ntitle: ${JSON.stringify(page.title)}\ndraft: true\ncategory: ${folder === "papers" ? "papers" : folder === "basics" ? "basics" : "other"}\n---\n\n${body}\n`,
+      "utf8",
+    )
   }
 
   console.log(
-    `Synced ${selectedFiles.length} files (${markdownCount} markdown) to ${normalize(path.relative(siteRoot, outputRoot))}`,
+    `Synced ${markdownCount} markdown notes to ${normalize(path.relative(siteRoot, outputRoot))}`,
   )
-  if (warnings.length > 0) {
-    console.warn("Unpublished wiki-link targets detected:")
-    for (const warning of warnings) {
-      console.warn(`- ${warning}`)
-    }
-  }
 }
 
 async function main() {
@@ -182,11 +222,19 @@ async function main() {
   }
 
   if (await hasMarkdownFiles(outputRoot)) {
-    console.log("SOURCE_NOTES_DIR is unavailable. Using committed content/notes for build.")
+    console.log("SOURCE_NOTES_DIR unavailable. Using existing src/content/notes.")
     return
   }
 
-  console.error("Missing SOURCE_NOTES_DIR and content/notes is empty, so there is nothing to build.")
+  // fallback: migrate from legacy Quartz content/notes if present
+  const legacy = path.join(siteRoot, "content", "notes")
+  if (await hasMarkdownFiles(legacy)) {
+    console.log("Migrating from content/notes ...")
+    await syncFromSource(legacy)
+    return
+  }
+
+  console.error("No notes source found. Set SOURCE_NOTES_DIR in .env.local")
   process.exit(1)
 }
 

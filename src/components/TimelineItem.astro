@@ -1,0 +1,24 @@
+---
+import { typeLabel, type ChangelogItem } from "../data/changelog"
+
+interface Props {
+  item: ChangelogItem
+}
+
+const { item } = Astro.props
+const label = typeLabel[item.type]
+---
+
+<article class="timeline-item" data-type={item.type}>
+  <div class="timeline-dot" aria-hidden="true"></div>
+  <div class="timeline-body">
+    <div class="meta" style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;">
+      <time datetime={item.date}>{item.date}</time>
+      <span class={`tag ${item.type === "note" ? "tag-accent" : "tag-brand"}`}>{label}</span>
+    </div>
+    <h3>
+      {item.href ? <a href={item.href}>{item.title}</a> : item.title}
+    </h3>
+    <p>{item.summary}</p>
+  </div>
+</article>

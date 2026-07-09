@@ -1,0 +1,18 @@
+---
+import { nav, site } from "../data/site"
+const year = new Date().getFullYear()
+---
+
+<footer class="site-footer">
+  <div class="container inner">
+    <div>
+      <strong style="color: var(--ink); font-family: var(--font-serif);">{site.name}</strong>
+      <div style="margin-top: 0.25rem;">{site.tagline}</div>
+      <div style="margin-top: 0.35rem;">© {year} · Built with Astro</div>
+    </div>
+    <nav aria-label="页脚导航">
+      {nav.map((item) => <a href={item.href}>{item.label}</a>)}
+      <a href={site.github} target="_blank" rel="noopener noreferrer">GitHub</a>
+    </nav>
+  </div>
+</footer>

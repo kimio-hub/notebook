@@ -1,0 +1,128 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro"
+import NoteCard from "../components/NoteCard.astro"
+import TimelineItem from "../components/TimelineItem.astro"
+import { changelog, type ChangelogItem } from "../data/changelog"
+import { site } from "../data/site"
+import {
+  categoryLabel,
+  formatDateShort,
+  getPublishedNotes,
+  noteHref,
+} from "../lib/notes"
+
+const notes = await getPublishedNotes()
+const latestNotes = notes.slice(0, 6)
+const basicsCount = notes.filter((n) => n.data.category === "basics").length
+const papersCount = notes.filter((n) => n.data.category === "papers").length
+
+const noteUpdates: ChangelogItem[] = notes.slice(0, 5).map((note) => ({
+  date: formatDateShort(note.data.updated ?? note.data.date) || "2026-01-01",
+  title: `更新笔记 · ${note.data.title}`,
+  summary: `${categoryLabel(note.data.category)} · ${note.data.tags?.slice(0, 3).join(" / ") || "学习笔记"}`,
+  type: "note",
+  href: noteHref(note),
+}))
+
+const feed = [...changelog, ...noteUpdates]
+  .sort((a, b) => b.date.localeCompare(a.date))
+  .slice(0, 6)
+---
+
+<BaseLayout title={site.title} description={site.description}>
+  <section class="hero">
+    <div class="hero-card">
+      <div class="hero-inner">
+        <img class="hero-avatar" src="/avatar.jpg" alt={`${site.name} 的头像`} width="96" height="96" />
+        <div>
+          <p class="hero-kicker">Personal Site</p>
+          <h1>{site.name}</h1>
+          <p class="hero-role">{site.role}</p>
+          <p class="hero-lead">
+            {site.bio}
+          </p>
+          <div class="tag-row">
+            {site.interests.map((item) => <span class="tag">{item}</span>)}
+          </div>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="/notes/">浏览笔记</a>
+            <a class="btn btn-ghost" href="/updates/">查看更新</a>
+            <a class="btn btn-ghost" href="/friends/">友链</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-side">
+      <div class="panel stat-card">
+        <div class="label">公开笔记</div>
+        <div class="value">{notes.length}</div>
+        <div class="hint">基础 {basicsCount} · 论文 {papersCount}</div>
+      </div>
+      <div class="panel stat-card">
+        <div class="label">最近动态</div>
+        <div class="value" style="font-size:1.25rem;margin-top:0.45rem;">
+          {feed[0]?.title ?? "暂无"}
+        </div>
+        <div class="hint">{feed[0]?.date ?? ""} · 可视化时间线</div>
+      </div>
+      <div class="panel stat-card">
+        <div class="label">GitHub</div>
+        <div class="value" style="font-size:1.35rem;margin-top:0.4rem;">@{site.githubUser}</div>
+        <div class="hint"><a href={site.github} target="_blank" rel="noopener noreferrer">打开主页 →</a></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <h2>最近更新</h2>
+        <p>站点改动与笔记更新合在一条时间线上，打开就能扫一眼发生了什么。</p>
+      </div>
+      <a class="section-link" href="/updates/">全部动态 →</a>
+    </div>
+    <div class="timeline">
+      {feed.map((item) => <TimelineItem item={item} />)}
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <h2>精选笔记</h2>
+        <p>从基础概念到论文精读，按最近改动排序。</p>
+      </div>
+      <a class="section-link" href="/notes/">全部笔记 →</a>
+    </div>
+    <div class="card-grid">
+      {latestNotes.map((note) => <NoteCard note={note} />)}
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <h2>快速入口</h2>
+        <p>想直接开读，可以从这几条路径进去。</p>
+      </div>
+    </div>
+    <div class="card-grid">
+      <a class="note-card" href="/notes/basics/">
+        <div class="meta"><span class="tag tag-brand">基础</span></div>
+        <h3>基础笔记</h3>
+        <p>Transformer、PPO、GRPO、InfoNCE……把地基一块块钉牢。</p>
+      </a>
+      <a class="note-card" href="/notes/papers/">
+        <div class="meta"><span class="tag tag-accent">论文</span></div>
+        <h3>论文精读</h3>
+        <p>DeepSeek-V3、思维链系列、多模态检索与算法博弈论。</p>
+      </a>
+      <a class="note-card" href="/friends/">
+        <div class="meta"><span class="tag">社区</span></div>
+        <h3>友情链接</h3>
+        <p>和更多有意思的个人站互相看见。</p>
+      </a>
+    </div>
+  </section>
+</BaseLayout>

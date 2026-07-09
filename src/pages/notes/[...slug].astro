@@ -1,0 +1,78 @@
+---
+import { render } from "astro:content"
+import BaseLayout from "../../layouts/BaseLayout.astro"
+import {
+  categoryLabel,
+  formatDate,
+  getPublishedNotes,
+  noteHref,
+  type NoteEntry,
+} from "../../lib/notes"
+
+export async function getStaticPaths() {
+  const notes = await getPublishedNotes()
+  return notes.map((note) => ({
+    params: { slug: note.id },
+    props: { note },
+  }))
+}
+
+interface Props {
+  note: NoteEntry
+}
+
+const { note } = Astro.props
+const { Content, headings } = await render(note)
+const date = note.data.updated ?? note.data.date
+const toc = headings.filter((h) => h.depth >= 2 && h.depth <= 3)
+---
+
+<BaseLayout title={note.data.title} description={note.data.description ?? `${note.data.title} · Kimio 笔记`}>
+  <div class="note-layout">
+    <article class="article-card">
+      <div class="article-meta">
+        <a href="/notes/">笔记</a>
+        <span>·</span>
+        <a href={`/notes/${note.data.category}/`}>{categoryLabel(note.data.category)}</a>
+        {date && (
+          <>
+            <span>·</span>
+            <time datetime={date.toISOString()}>{formatDate(date)}</time>
+          </>
+        )}
+      </div>
+      <h1>{note.data.title}</h1>
+      {
+        note.data.tags?.length > 0 && (
+          <div class="tag-row" style="margin: 0 0 1.2rem;">
+            {note.data.tags.map((tag) => (
+              <span class="tag">#{tag}</span>
+            ))}
+          </div>
+        )
+      }
+      <div class="prose">
+        <Content />
+      </div>
+    </article>
+
+    {
+      toc.length > 0 && (
+        <aside class="toc" aria-label="本页目录">
+          <h2>目录</h2>
+          <ul>
+            {toc.map((h) => (
+              <li style={`padding-left: ${(h.depth - 2) * 0.75}rem`}>
+                <a href={`#${h.slug}`}>{h.text}</a>
+              </li>
+            ))}
+          </ul>
+        </aside>
+      )
+    }
+  </div>
+
+  <p style="margin-top: 1.5rem;">
+    <a class="btn btn-ghost" href="/notes/">← 返回笔记列表</a>
+  </p>
+</BaseLayout>

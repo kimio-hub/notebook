@@ -1,0 +1,113 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro"
+import TimelineItem from "../components/TimelineItem.astro"
+import { changelog, type ChangelogItem } from "../data/changelog"
+import {
+  categoryLabel,
+  formatDateShort,
+  getPublishedNotes,
+  noteHref,
+} from "../lib/notes"
+
+const notes = await getPublishedNotes()
+
+const noteItems: ChangelogItem[] = notes.map((note) => ({
+  date: formatDateShort(note.data.updated ?? note.data.date) || "2026-01-01",
+  title: note.data.title,
+  summary: `${categoryLabel(note.data.category)}笔记更新${
+    note.data.tags?.length ? ` · ${note.data.tags.slice(0, 4).join(" / ")}` : ""
+  }`,
+  type: "note",
+  href: noteHref(note),
+}))
+
+const all = [...changelog, ...noteItems].sort((a, b) => b.date.localeCompare(a.date))
+
+const counts = {
+  all: all.length,
+  site: all.filter((i) => i.type === "site").length,
+  note: all.filter((i) => i.type === "note").length,
+  project: all.filter((i) => i.type === "project").length,
+}
+---
+
+<BaseLayout title="更新" description="Kimio 个人网站的可视化更新时间线：站点改动与笔记动态。">
+  <header class="page-intro">
+    <h1>更新动态</h1>
+    <p>
+      把站点改版、笔记增补放在同一条时间线上。打开这个页面就能看到最近发生了什么。
+    </p>
+  </header>
+
+  <div
+    class="hero-side"
+    style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:0.75rem;margin-bottom:1.4rem;"
+  >
+    <div class="panel stat-card">
+      <div class="label">全部</div>
+      <div class="value">{counts.all}</div>
+    </div>
+    <div class="panel stat-card">
+      <div class="label">站点</div>
+      <div class="value">{counts.site}</div>
+    </div>
+    <div class="panel stat-card">
+      <div class="label">笔记</div>
+      <div class="value">{counts.note}</div>
+    </div>
+  </div>
+
+  <div class="filter-bar" id="update-filters" aria-label="动态类型">
+    <button type="button" class="filter-btn active" data-filter="all">全部</button>
+    <button type="button" class="filter-btn" data-filter="site">站点</button>
+    <button type="button" class="filter-btn" data-filter="note">笔记</button>
+    <button type="button" class="filter-btn" data-filter="project">项目</button>
+  </div>
+
+  <div class="timeline" id="update-timeline">
+    {all.map((item) => <TimelineItem item={item} />)}
+  </div>
+
+  <p style="margin-top: 1.5rem; color: var(--muted); font-size: 0.9rem;">
+    站点里程碑维护在 <code>src/data/changelog.ts</code>；笔记动态在每次同步构建时自动生成。
+  </p>
+</BaseLayout>
+
+<style>
+  .filter-btn {
+    padding: 0.4rem 0.85rem;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--bg-elevated);
+    color: var(--ink-soft);
+    font-size: 0.86rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .filter-btn:hover,
+  .filter-btn.active {
+    background: var(--brand-soft);
+    border-color: color-mix(in srgb, var(--brand) 35%, var(--line));
+    color: var(--brand);
+  }
+</style>
+
+<script>
+  const bar = document.getElementById("update-filters")
+  const items = Array.from(document.querySelectorAll<HTMLElement>("#update-timeline .timeline-item"))
+
+  bar?.addEventListener("click", (event) => {
+    const target = event.target as HTMLElement
+    if (!(target instanceof HTMLButtonElement)) return
+    const filter = target.dataset.filter ?? "all"
+
+    bar.querySelectorAll(".filter-btn").forEach((btn) => btn.classList.remove("active"))
+    target.classList.add("active")
+
+    items.forEach((item) => {
+      const type = item.dataset.type
+      item.style.display = filter === "all" || type === filter ? "" : "none"
+    })
+  })
+</script>

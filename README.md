@@ -1,17 +1,56 @@
-# Quartz v4
+# Kimio 个人网站
 
-> “[One] who works with the door open gets all kinds of interruptions, but [they] also occasionally gets clues as to what the world is and what might be important.” — Richard Hamming
+基于 **Astro** 的静态个人站：首页动态、笔记卡片、可视化更新时间线、友链。
 
-Quartz is a set of tools that helps you publish your [digital garden](https://jzhao.xyz/posts/networked-thought) and notes as a website for free.
+- 站点：https://hides.cc.cd
+- 仓库：https://github.com/kimio-hub/notebook
 
-🔗 Read the documentation and get started: https://quartz.jzhao.xyz/
+## 页面
 
-[Join the Discord Community](https://discord.gg/cRFFHYye7t)
+| 路径 | 说明 |
+|------|------|
+| `/` | 首页：简介、最近更新、精选笔记 |
+| `/notes/` | 全部笔记 |
+| `/notes/basics/` | 基础笔记 |
+| `/notes/papers/` | 论文精读 |
+| `/updates/` | 可视化更新时间线 |
+| `/friends/` | 友链 |
+| `/about/` | 关于 |
 
-## Sponsors
+**已移除 RSS。**
 
-<p align="center">
-  <a href="https://github.com/sponsors/jackyzha0">
-    <img src="https://cdn.jsdelivr.net/gh/jackyzha0/jackyzha0/sponsorkit/sponsors.svg" />
-  </a>
-</p>
+## 本地开发
+
+```bash
+npm install
+npm run dev
+```
+
+构建：
+
+```bash
+npm run build   # 等同 site:check：同步笔记 + 构建
+```
+
+输出目录：`dist/`
+
+## Cloudflare Pages
+
+| 配置项 | 值 |
+|--------|-----|
+| Build command | `npm run build` |
+| Build output directory | `dist` |
+| Node version | `22`（或更高） |
+
+## 内容维护
+
+- **笔记源目录**：`.env.local` 中的 `SOURCE_NOTES_DIR`（默认指向本地 `论文笔记`）
+- **友链**：编辑 `src/data/friends.ts`
+- **站点里程碑**：编辑 `src/data/changelog.ts`
+- **站点文案**：编辑 `src/data/site.ts`
+
+一键更新（仓库外脚本）：
+
+```powershell
+& "E:\study\workflow\一键更新博客.bat"
+```

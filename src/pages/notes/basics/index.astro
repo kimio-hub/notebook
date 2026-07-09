@@ -1,0 +1,25 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro"
+import NoteCard from "../../../components/NoteCard.astro"
+import { getPublishedNotes } from "../../../lib/notes"
+
+const all = await getPublishedNotes()
+const notes = all.filter((n) => n.data.category === "basics")
+---
+
+<BaseLayout title="基础笔记" description="强化学习与大语言模型的基础概念笔记。">
+  <header class="page-intro">
+    <h1>基础笔记</h1>
+    <p>架构、目标函数、优化方法——用自己的话把一条链路讲顺。</p>
+  </header>
+
+  <div class="filter-bar" aria-label="笔记分类">
+    <a href="/notes/">全部 ({all.length})</a>
+    <a href="/notes/basics/" class="active">基础 ({notes.length})</a>
+    <a href="/notes/papers/">论文 ({all.filter((n) => n.data.category === "papers").length})</a>
+  </div>
+
+  <div class="card-grid">
+    {notes.map((note) => <NoteCard note={note} />)}
+  </div>
+</BaseLayout>

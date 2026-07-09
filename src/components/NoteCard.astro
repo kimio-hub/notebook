@@ -1,0 +1,33 @@
+---
+import type { NoteEntry } from "../lib/notes"
+import { categoryLabel, excerptFromBody, formatDateShort, noteHref } from "../lib/notes"
+
+interface Props {
+  note: NoteEntry
+}
+
+const { note } = Astro.props
+const href = noteHref(note)
+const date = note.data.updated ?? note.data.date
+const summary = note.data.description ?? excerptFromBody(note.body)
+---
+
+<a class="note-card" href={href}>
+  <div class="meta">
+    <span class={`tag ${note.data.category === "papers" ? "tag-accent" : "tag-brand"}`}>
+      {categoryLabel(note.data.category)}
+    </span>
+    {date && <time datetime={formatDateShort(date)}>{formatDateShort(date)}</time>}
+  </div>
+  <h3>{note.data.title}</h3>
+  {summary && <p>{summary}</p>}
+  {
+    note.data.tags?.length > 0 && (
+      <div class="tags">
+        {note.data.tags.slice(0, 4).map((tag) => (
+          <span class="tag">#{tag}</span>
+        ))}
+      </div>
+    )
+  }
+</a>
