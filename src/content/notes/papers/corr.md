@@ -4,12 +4,13 @@ tags:
   - cir
   - multimodal
   - reasoning
+description: "> 论文状态：ICLR 2026 withdrawn submission, OpenReview > 方法名：CoRR, Chain of Reflective Composed Image Retrieval > 任务：Zero-Shot Composed Image Retrieval, ZS-CIR > 核心关…"
 category: "papers"
 date: "2026-07-09"
 updated: "2026-07-09"
 ---
 
-# Reflection from Retrieval: MLLM-Guided Iterative Reasoning for Zero-Shot Composed Image Retrieval
+## Reflection from Retrieval: MLLM-Guided Iterative Reasoning for Zero-Shot Composed Image Retrieval
 
 > 论文状态：ICLR 2026 withdrawn submission, OpenReview  
 > 方法名：CoRR, Chain of Reflective Composed Image Retrieval  

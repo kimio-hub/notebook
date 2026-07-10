@@ -3,6 +3,7 @@ title: "Transformer 学习笔记"
 tags:
   - llm
   - transformer
+description: "Transformer 的输入不是直接处理词本身，而是先把每个 token 映射成向量表示，再加入位置信息。"
 category: "basics"
 date: "2026-07-09"
 updated: "2026-07-09"

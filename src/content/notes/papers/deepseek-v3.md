@@ -4,6 +4,7 @@ tags:
   - llm
   - moe
   - architecture
+description: "DeepSeek-V3 可以看作是在 Transformer 基础上，对注意力机制、MoE 结构和训练目标做了进一步改造。"
 category: "papers"
 date: "2026-07-09"
 updated: "2026-07-09"

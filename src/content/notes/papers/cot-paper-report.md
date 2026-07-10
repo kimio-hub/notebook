@@ -3,6 +3,7 @@ title: "CoT 论文小报告"
 tags:
   - reasoning
   - prompting
+description: "论文标题： Chain-of-Thought Prompting Elicits Reasoning in Large Language Models 中文理解： 链式思维提示可以激发大语言模型的推理能力 核心关键词： Chain-of-Thought, CoT, reasoning trace, prompting,…"
 category: "papers"
 date: "2026-07-09"
 updated: "2026-07-09"

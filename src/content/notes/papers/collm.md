@@ -4,12 +4,13 @@ tags:
   - cir
   - multimodal
   - llm
+description: "> 论文：CoLLM: A Large Language Model for Composed Image Retrieval > 会议：CVPR 2025 > 项目页：collm-cvpr25.github.io > 任务：Composed Image Retrieval, CIR > 核心关键词：LLM embed…"
 category: "papers"
 date: "2026-07-09"
 updated: "2026-07-09"
 ---
 
-# CoLLM: A Large Language Model for Composed Image Retrieval
+## CoLLM: A Large Language Model for Composed Image Retrieval
 
 > 论文：CoLLM: A Large Language Model for Composed Image Retrieval  
 > 会议：CVPR 2025  

@@ -3,6 +3,7 @@ title: InfoNCE：对比学习的核心损失
 tags:
   - contrastive-learning
   - multimodal
+description: "InfoNCE 是对比学习（contrastive learning）中最常用的损失函数，堪称多模态领域的\"统治级\"损失。核心就一句话： 拉近正样本，推远负样本。CLIP、MoCo、SimCLR 这些经典工作，以及组合图像检索（CIR）所依赖的图文对齐能力，底层都是它。"
 category: "basics"
 date: "2026-07-09"
 updated: "2026-07-09"

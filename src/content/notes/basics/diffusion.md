@@ -3,6 +3,7 @@ title: "Diffusion 学习笔记（初步）"
 tags:
   - diffusion
   - generative-models
+description: "- 前向过程：不断往数据里加噪声； - 反向过程：训练模型一步步去掉噪声，把纯噪声还原成有意义的数据。"
 category: "basics"
 date: "2026-07-09"
 updated: "2026-07-09"

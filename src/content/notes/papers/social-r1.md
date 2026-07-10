@@ -4,12 +4,13 @@ tags:
   - llm
   - rl
   - reasoning
+description: "这篇论文关注的是 LLM 的 social intelligence（社会智能）。虽然大语言模型在很多任务上已经很强，但在真正涉及社会线索理解、他人心理状态推断、以及生成恰当社会回应时，模型常常仍然依赖表层模式，而不是真正进行社会推理。"
 category: "papers"
 date: "2026-07-09"
 updated: "2026-07-09"
 ---
 
-# Social-R1: Towards Human-like Social Reasoning in LLMs
+## Social-R1: Towards Human-like Social Reasoning in LLMs
 
 ## 论文要解决什么问题
 这篇论文关注的是 LLM 的 **social intelligence（社会智能）**。虽然大语言模型在很多任务上已经很强，但在真正涉及社会线索理解、他人心理状态推断、以及生成恰当社会回应时，模型常常仍然依赖表层模式，而不是真正进行社会推理。

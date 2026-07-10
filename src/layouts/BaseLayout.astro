@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css"
+import "katex/dist/katex.min.css"
 import Header from "../components/Header.astro"
 import Footer from "../components/Footer.astro"
 import { site } from "../data/site"
@@ -13,7 +14,7 @@ interface Props {
 const {
   title = site.title,
   description = site.description,
-  image = "/avatar.jpg",
+  image = "/avatar.webp",
 } = Astro.props
 
 const pageTitle = title === site.title ? `${site.name} · 个人主页` : `${title} · ${site.name}`
@@ -29,7 +30,7 @@ const canonical = new URL(Astro.url.pathname, site.url).toString()
     <meta name="description" content={description} />
     <meta name="author" content={site.author} />
     <link rel="canonical" href={canonical} />
-    <link rel="icon" type="image/jpeg" href="/avatar.jpg" />
+    <link rel="icon" type="image/webp" href="/avatar.webp" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
@@ -44,16 +45,16 @@ const canonical = new URL(Astro.url.pathname, site.url).toString()
       href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=JetBrains+Mono:wght@400;600&display=swap"
       rel="stylesheet"
     />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css"
-      crossorigin="anonymous"
-    />
     <title>{pageTitle}</title>
     <script is:inline>
       ;(() => {
         const key = "kimio-theme"
-        const saved = localStorage.getItem(key)
+        let saved = null
+        try {
+          saved = localStorage.getItem(key)
+        } catch {
+          // Storage can be unavailable in hardened/private browsing contexts.
+        }
         const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches
         if (saved === "dark" || (!saved && prefersDark)) {
           document.documentElement.classList.add("dark")
@@ -73,15 +74,56 @@ const canonical = new URL(Astro.url.pathname, site.url).toString()
       ;(() => {
         const key = "kimio-theme"
         const btn = document.getElementById("theme-toggle")
+        const root = document.documentElement
+
+        const updateThemeState = () => {
+          btn?.setAttribute("aria-pressed", String(root.classList.contains("dark")))
+        }
+
+        updateThemeState()
         btn?.addEventListener("click", () => {
-          const root = document.documentElement
           const next = root.classList.toggle("dark") ? "dark" : "light"
-          localStorage.setItem(key, next)
+          updateThemeState()
+          try {
+            localStorage.setItem(key, next)
+          } catch {
+            // The visual toggle still works when persistence is unavailable.
+          }
         })
+
         const toggle = document.getElementById("menu-toggle")
         const nav = document.getElementById("site-nav")
+
+        const setMenuOpen = (open) => {
+          nav?.classList.toggle("open", open)
+          toggle?.setAttribute("aria-expanded", String(open))
+          toggle?.setAttribute("aria-label", open ? "关闭菜单" : "打开菜单")
+        }
+
         toggle?.addEventListener("click", () => {
-          nav?.classList.toggle("open")
+          setMenuOpen(!nav?.classList.contains("open"))
+        })
+
+        nav?.addEventListener("click", (event) => {
+          if (event.target instanceof HTMLAnchorElement) setMenuOpen(false)
+        })
+
+        document.addEventListener("click", (event) => {
+          const target = event.target
+          if (target instanceof Node && !nav?.contains(target) && !toggle?.contains(target)) {
+            setMenuOpen(false)
+          }
+        })
+
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "Escape" && nav?.classList.contains("open")) {
+            setMenuOpen(false)
+            toggle?.focus()
+          }
+        })
+
+        window.matchMedia("(min-width: 861px)").addEventListener("change", (event) => {
+          if (event.matches) setMenuOpen(false)
         })
       })()
     </script>

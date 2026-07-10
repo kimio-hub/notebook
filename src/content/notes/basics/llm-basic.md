@@ -2,6 +2,7 @@
 title: "LLM 基础学习笔记"
 tags:
   - llm
+description: "LLM 的输入和输出都不是直接处理自然语言字符串，而是处理 token 及其对应的向量表示。理解 token、embedding、encoder、decoder 以及生成过程，是继续学习 Transformer 和推理过程的基础。"
 category: "basics"
 date: "2026-07-09"
 updated: "2026-07-09"

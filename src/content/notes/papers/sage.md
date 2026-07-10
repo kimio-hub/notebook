@@ -4,12 +4,13 @@ tags:
   - retrieval
   - agents
   - benchmark
+description: "这篇论文关注的是：在 deep research agent 场景里，检索模块到底是不是已经足够强？特别是，近年来 LLM-based retriever 很热门，于是一个自然问题是：它们是否真的比传统检索器更适合 deep research agent？"
 category: "papers"
 date: "2026-07-09"
 updated: "2026-07-09"
 ---
 
-# SAGE: Benchmarking and Improving Retrieval for Deep Research Agents
+## SAGE: Benchmarking and Improving Retrieval for Deep Research Agents
 
 ## 论文要解决什么问题
 这篇论文关注的是：在 deep research agent 场景里，检索模块到底是不是已经足够强？特别是，近年来 LLM-based retriever 很热门，于是一个自然问题是：它们是否真的比传统检索器更适合 deep research agent？

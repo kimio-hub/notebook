@@ -5,7 +5,6 @@ import {
   categoryLabel,
   formatDate,
   getPublishedNotes,
-  noteHref,
   type NoteEntry,
 } from "../../lib/notes"
 
@@ -25,6 +24,7 @@ const { note } = Astro.props
 const { Content, headings } = await render(note)
 const date = note.data.updated ?? note.data.date
 const toc = headings.filter((h) => h.depth >= 2 && h.depth <= 3)
+const categoryHref = note.data.category === "other" ? "/notes/" : `/notes/${note.data.category}/`
 ---
 
 <BaseLayout title={note.data.title} description={note.data.description ?? `${note.data.title} · Kimio 笔记`}>
@@ -33,7 +33,7 @@ const toc = headings.filter((h) => h.depth >= 2 && h.depth <= 3)
       <div class="article-meta">
         <a href="/notes/">笔记</a>
         <span>·</span>
-        <a href={`/notes/${note.data.category}/`}>{categoryLabel(note.data.category)}</a>
+        <a href={categoryHref}>{categoryLabel(note.data.category)}</a>
         {date && (
           <>
             <span>·</span>

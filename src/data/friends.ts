@@ -34,11 +34,15 @@ export const friends: Friend[] = [
 export const friendLinkGuide = {
   title: "申请友链",
   intro: "欢迎互换友链。",
+  requirements: [
+    "站点可以稳定访问，并以原创内容为主。",
+    "请提供站点名称、链接、简介和头像地址。",
+  ],
   mine: {
     name: "Kimio",
     url: "https://hides.cc.cd",
     description: "计算机 · RL / LLM 学习笔记与个人主页",
-    avatar: "https://hides.cc.cd/avatar.jpg",
+    avatar: "https://hides.cc.cd/avatar.webp",
   },
   contact: "通过邮箱或 GitHub 联系我~",
 }

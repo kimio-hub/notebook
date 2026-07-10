@@ -3,6 +3,7 @@ title: "Self-Consistency 论文小报告"
 tags:
   - reasoning
   - prompting
+description: "论文标题： Self-Consistency Improves Chain of Thought Reasoning in Language Models 中文理解： 自洽性可以提升语言模型的链式思维推理能力 核心关键词： Self-Consistency, Chain-of-Thought, sampling dec…"
 category: "papers"
 date: "2026-07-09"
 updated: "2026-07-09"

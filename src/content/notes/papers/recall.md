@@ -3,12 +3,13 @@ title: "ReCALL"
 tags:
   - cir
   - multimodal
+description: "> 论文：Tianyu Yang et al., ReCALL: Recalibrating Capability Degradation for MLLM-based Composed Image Retrieval, arXiv:2602.01639v2, Accepted to CVPR 2026 > 代码：ht…"
 category: "papers"
 date: "2026-07-09"
 updated: "2026-07-09"
 ---
 
-# ReCALL: Recalibrating Capability Degradation for MLLM-based Composed Image Retrieval
+## ReCALL: Recalibrating Capability Degradation for MLLM-based Composed Image Retrieval
 
 > 论文：Tianyu Yang et al., **ReCALL: Recalibrating Capability Degradation for MLLM-based Composed Image Retrieval**, arXiv:2602.01639v2, Accepted to CVPR 2026  
 > 代码：https://github.com/RemRico/Recall  

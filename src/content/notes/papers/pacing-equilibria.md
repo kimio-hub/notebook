@@ -3,6 +3,7 @@ title: Pacing Equilibria：二价拍卖中 pacing 均衡的常数不可近似性
 tags:
   - game-theory
   - auctions
+description: "这篇笔记的目标是：即使没读过原论文，也能看明白它 研究什么问题、模型怎么定义、主结果是什么、为什么难、证明怎么构造、还能往哪里做。"
 category: "papers"
 date: "2026-07-09"
 updated: "2026-07-09"
@@ -12,7 +13,7 @@ updated: "2026-07-09"
 
 ---
 
-# 0. 先用一句话说清楚这篇论文
+## 0. 先用一句话说清楚这篇论文
 
 这篇论文研究的是：
 
@@ -31,7 +32,7 @@ updated: "2026-07-09"
 
 ---
 
-# 1. 为什么会有 pacing 这个东西？
+## 1. 为什么会有 pacing 这个东西？
 
 先从广告拍卖背景讲起。
 
@@ -64,7 +65,7 @@ $$
 
 ---
 
-# 2. 二价 pacing game 的正式模型
+## 2. 二价 pacing game 的正式模型
 
 论文定义的 second-price pacing game 可以写成
 
@@ -113,7 +114,7 @@ $$
 
 ---
 
-# 3. 什么是 exact pacing equilibrium？
+## 3. 什么是 exact pacing equilibrium？
 
 一个 pacing equilibrium 是一组
 
@@ -196,7 +197,7 @@ $$
 
 ---
 
-# 4. 一个小例子帮助理解 pacing equilibrium
+## 4. 一个小例子帮助理解 pacing equilibrium
 
 假设有两个广告主 (A,B)，两个相同广告展示机会 (g_1,g_2)。
 
@@ -255,7 +256,7 @@ $$
 
 ---
 
-# 5. 什么是 $\gamma$-approximate pacing equilibrium？
+## 5. 什么是 $\gamma$-approximate pacing equilibrium？
 
 论文研究的不是 exact equilibrium，而是近似 equilibrium。
 
@@ -299,7 +300,7 @@ $$
 
 ---
 
-# 6. 这篇论文的主定理到底说了什么？
+## 6. 这篇论文的主定理到底说了什么？
 
 主定理是：
 
@@ -317,7 +318,7 @@ $$
 
 ---
 
-# 7. PPAD-hard 在这里是什么意思？
+## 7. PPAD-hard 在这里是什么意思？
 
 给初学者讲时，不要把 PPAD-hard 和 NP-hard 混在一起。
 
@@ -350,7 +351,7 @@ NP-hard 常见于判定问题，比如“是否存在一个满足条件的解”
 
 ---
 
-# 8. 论文为什么难？核心证明思路概览
+## 8. 论文为什么难？核心证明思路概览
 
 论文的证明是一个 **reduction**。
 
@@ -370,7 +371,7 @@ Pure-Circuit 是一个已知 PPAD-complete 的问题。论文把任意一个 Pur
 
 ---
 
-# 9. Pure-Circuit 是什么？
+## 9. Pure-Circuit 是什么？
 
 Pure-Circuit 可以理解成一种“带未知值的逻辑电路”。
 
@@ -450,7 +451,7 @@ PURIFY 门的作用是保证系统里总有一些变量被“推回”到布尔�
 
 ---
 
-# 10. 变量如何编码成 pacing multiplier？
+## 10. 变量如何编码成 pacing multiplier？
 
 这是整篇论文最关键的想法。
 
@@ -495,7 +496,7 @@ $$
 
 ---
 
-# 11. 第一个关键 gadget：强迫 $\alpha_{b_v}\ge \kappa$
+## 11. 第一个关键 gadget：强迫 $\alpha_{b_v}\ge \kappa$
 
 论文的 technical overview 里先解释了一个很重要的小技巧：通过加入一个辅助买家和一个辅助商品，可以强迫某个买家的 multiplier 不能太小。([arXiv](https://arxiv.org/pdf/2501.15295 "Constant Inapproximability of Pacing Equilibria in Second-Price Auctions"))
 
@@ -546,7 +547,7 @@ $$
 
 ---
 
-# 12. 第二个关键 gadget：让输出买家“支付输入 multiplier”
+## 12. 第二个关键 gadget：让输出买家“支付输入 multiplier”
 
 接下来要模拟逻辑门。论文设计一种商品 (g_{(u,v)})，连接输入变量 (u) 和输出变量 (v)。
 
@@ -587,7 +588,7 @@ $$
 
 ---
 
-# 13. NOT 门怎么模拟？
+## 13. NOT 门怎么模拟？
 
 假设 Pure-Circuit 中有一个 NOT 门：
 
@@ -716,7 +717,7 @@ $$
 
 ---
 
-# 14. NOR 门怎么模拟？
+## 14. NOR 门怎么模拟？
 
 NOR 门有两个输入 (u,v)，一个输出 (w)：
 
@@ -853,7 +854,7 @@ $$
 
 ---
 
-# 15. NPURIFY 门为什么需要？
+## 15. NPURIFY 门为什么需要？
 
 如果只有 NOT 和 NOR，而变量可以取 $\bot$，很多约束在输入为 $\bot$ 时会变得松。为了保证 reduction 有足够的“布尔信息”，Pure-Circuit 使用 PURIFY 类型的门。
 
@@ -868,7 +869,7 @@ $$
 
 ---
 
-# 16. NPURIFY 门怎么模拟？
+## 16. NPURIFY 门怎么模拟？
 
 假设有 NPURIFY 门：
 
@@ -978,7 +979,7 @@ $$
 
 ---
 
-# 17. 整个 reduction 的正确性总结
+## 17. 整个 reduction 的正确性总结
 
 证明可以压缩成下面这条链：
 
@@ -1050,7 +1051,7 @@ $$
 
 ---
 
-# 18. 为什么是 (1/3) 这个常数？
+## 18. 为什么是 (1/3) 这个常数？
 
 论文设：
 
@@ -1082,7 +1083,7 @@ $$
 
 ---
 
-# 19. 每个 bidder 最多对 4 个 item 出价为什么成立？
+## 19. 每个 bidder 最多对 4 个 item 出价为什么成立？
 
 这点很重要，因为它说明 hardness 不是靠“一个买家连接海量商品”堆出来的。
 
@@ -1103,7 +1104,7 @@ Pure-Circuit 使用的实例可以保证每个节点的总交互度很小。论�
 
 ---
 
-# 20. Appendix 里的 weaker approximation 是什么？
+## 20. Appendix 里的 weaker approximation 是什么？
 
 论文还证明了一个更鲁棒的结果。
 
@@ -1132,7 +1133,7 @@ $$
 
 ---
 
-# 21. 这篇论文的贡献应该怎么评价？
+## 21. 这篇论文的贡献应该怎么评价？
 
 它的贡献可以分成三层。
 
@@ -1171,7 +1172,7 @@ $$
 
 ---
 
-# 22. 初学者最容易误解的地方
+## 22. 初学者最容易误解的地方
 
 ## 误解 1：这是在近似 welfare 或 revenue 吗？
 
@@ -1231,7 +1232,7 @@ $$
 
 ---
 
-# 23. 一堂课可以怎么讲？
+## 23. 一堂课可以怎么讲？
 
 你可以按下面 6 个模块组织。
 
@@ -1326,7 +1327,7 @@ $$
 
 ---
 
-# 24. 可以延伸的研究方向
+## 24. 可以延伸的研究方向
 
 ## 方向 1：tight approximability
 
@@ -1475,7 +1476,7 @@ Appendix 证明 ($\sigma,\gamma,\tau$)-approximation 在常数 (1/20) 附近也�
 
 ---
 
-# 25. 最后用三句话总结给学生
+## 25. 最后用三句话总结给学生
 
 第一句话：
 

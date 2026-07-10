@@ -3,12 +3,13 @@ title: "Magma"
 tags:
   - multimodal
   - agents
+description: "这篇论文关注的是： 怎样让视觉语言模型（VL model）真正具备和外部环境交互的能力。"
 category: "papers"
 date: "2026-07-09"
 updated: "2026-07-09"
 ---
 
-# Magma：A Foundation Model for Multimodal AI Agents
+## Magma：A Foundation Model for Multimodal AI Agents
 
 ## 这篇论文主要在解决什么问题
 这篇论文关注的是：**怎样让视觉语言模型（VL model）真正具备和外部环境交互的能力**。

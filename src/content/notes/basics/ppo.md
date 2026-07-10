@@ -3,6 +3,7 @@ title: "PPO 学习笔记"
 tags:
   - rl
   - policy-optimization
+description: "PPO（Proximal Policy Optimization，近端策略优化）是一种经典的策略优化算法，核心思想可以概括为“小步快跑”：如果某个动作带来了正向反馈，就提高它的概率；如果带来了负向反馈，就降低它的概率，但每次更新都不能太大。这样可以在提升性能的同时保持训练稳定。"
 category: "basics"
 date: "2026-07-09"
 updated: "2026-07-09"

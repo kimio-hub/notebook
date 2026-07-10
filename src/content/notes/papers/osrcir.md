@@ -4,12 +4,13 @@ tags:
   - cir
   - multimodal
   - reasoning
+description: "> 论文：Reason-before-Retrieve: One-Stage Reflective Chain-of-Thoughts for Training-Free Zero-Shot Composed Image Retrieval > 会议：CVPR 2025 > 方法名：OSrCIR > 代码：https:…"
 category: "papers"
 date: "2026-07-09"
 updated: "2026-07-09"
 ---
 
-# Reason-before-Retrieve: One-Stage Reflective Chain-of-Thoughts for Training-Free Zero-Shot Composed Image Retrieval
+## Reason-before-Retrieve: One-Stage Reflective Chain-of-Thoughts for Training-Free Zero-Shot Composed Image Retrieval
 
 > 论文：Reason-before-Retrieve: One-Stage Reflective Chain-of-Thoughts for Training-Free Zero-Shot Composed Image Retrieval  
 > 会议：CVPR 2025  

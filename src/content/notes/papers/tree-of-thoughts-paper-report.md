@@ -4,6 +4,7 @@ tags:
   - reasoning
   - prompting
   - search
+description: "论文标题： Tree of Thoughts: Deliberate Problem Solving with Large Language Models 中文理解： 思维树：用大语言模型进行审慎的问题求解 核心关键词： Tree of Thoughts, ToT, search, thought, state, ev…"
 category: "papers"
 date: "2026-07-09"
 updated: "2026-07-09"

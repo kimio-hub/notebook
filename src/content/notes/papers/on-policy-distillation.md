@@ -4,6 +4,7 @@ tags:
   - distillation
   - rl
   - llm
+description: "OPD 的\"正典\"是 Agarwal et al., On-Policy Distillation of Language Models: Learning from Self-Generated Mistakes, ICLR 2024。 作者来自 Google DeepMind、Mila、University of…"
 category: "papers"
 date: "2026-07-09"
 updated: "2026-07-09"
@@ -14,7 +15,7 @@ OPD 的"正典"是 **Agarwal et al., _On-Policy Distillation of Language Models:
 
 ---
 
-# 1. 这篇论文一句话在讲什么？
+## 1. 这篇论文一句话在讲什么？
 
 **传统蒸馏是：学生看老师写好的答案来学。**
 **OPD 是：学生自己先写答案，老师再针对学生写出来的每一步进行批改。**
@@ -49,7 +50,7 @@ Thinking Machines Lab 后来把这点概括成：SFT 是 off-policy + dense，RL
 
 ---
 
-# 2. 论文要解决的核心痛点：distribution mismatch
+## 2. 论文要解决的核心痛点：distribution mismatch
 
 自回归语言模型有一个非常麻烦的问题：**当前 token 的预测依赖之前所有 token。**
 
@@ -92,7 +93,7 @@ OPD 的做法是：让学生先自己生成。假设学生写出：
 
 ---
 
-# 3. OPD 的核心算法：GKD
+## 3. OPD 的核心算法：GKD
 
 论文的方法叫 **Generalized Knowledge Distillation, GKD**。它不是只提出一个固定算法，而是提出一个统一框架：
 
@@ -158,7 +159,7 @@ for batch in training:
 
 ---
 
-# 4. 为什么它叫 "on-policy"？
+## 4. 为什么它叫 "on-policy"？
 
 在强化学习里，**policy** 指当前模型的行为策略。对语言模型来说，policy 就是：
 
@@ -186,7 +187,7 @@ OPD 不是简单地"用老师打标签"。它真正有价值的地方是：
 
 ---
 
-# 5. Forward KL、Reverse KL、JSD：三种损失怎么理解？
+## 5. Forward KL、Reverse KL、JSD：三种损失怎么理解？
 
 论文的另一个重要贡献是：它不只说"用 KL 就完了"，而是系统讨论不同 divergence 的效果。
 
@@ -242,7 +243,7 @@ JSD 可以看成 forward KL 和 reverse KL 之间的折中。论文用了多个 
 
 ---
 
-# 6. 这篇论文的实验设计
+## 6. 这篇论文的实验设计
 
 论文实验主要用 T5 系列模型。教师是大模型 **T5-XL，约 3B 参数**；学生是更小的 T5-small、T5-base、T5-large，分别约 77M、250M、800M 参数，也就是比教师小约 38 倍、12 倍、3.8 倍。任务包括摘要、翻译、算术推理，以及指令泛化。
 
@@ -274,7 +275,7 @@ JSD 可以看成 forward KL 和 reverse KL 之间的折中。论文用了多个 
 
 ---
 
-# 7. 这篇论文真正教会我们的 5 个原则
+## 7. 这篇论文真正教会我们的 5 个原则
 
 ## 原则一：蒸馏不该只在老师的轨迹上发生
 
@@ -331,7 +332,7 @@ $$p_T(\cdot \mid x, y_{<t})$$
 
 ---
 
-# 8. 这篇论文的局限性
+## 8. 这篇论文的局限性
 
 第一，**成本不是零**。OPD 要让学生采样，还要让教师在学生轨迹上计算概率。论文在 GSM8K 上报告，相比从固定输出数据采样，学生采样带来的计算开销大约是 1.8×、2×、2.2×，具体取决于学生/教师尺寸比。
 
@@ -343,7 +344,7 @@ $$p_T(\cdot \mid x, y_{<t})$$
 
 ---
 
-# 9. 怎么检验自己真的掌握了？
+## 9. 怎么检验自己真的掌握了？
 
 能回答下面 7 个问题，就基本掌握了。
 
@@ -373,7 +374,7 @@ Forward KL 更覆盖、多样；reverse KL 更聚焦、保守；JSD 折中。论
 
 ---
 
-# 10. 最终浓缩版
+## 10. 最终浓缩版
 
 这篇论文的核心可以压缩成一句公式和一句话。
 
@@ -389,7 +390,7 @@ $$L_{\text{OPD}} = \mathbb{E}_{x}\,\mathbb{E}_{y\sim p_S(\cdot\mid x)}\left[ \fr
 
 ---
 
-# 附：DeepSeek-V4 把 OPD 用到了什么程度？
+## 附：DeepSeek-V4 把 OPD 用到了什么程度？
 
 > 本节整理自社区二手资料（技术报告转述与解读文章），细节未逐一核对原始报告，仅作延伸阅读。
 

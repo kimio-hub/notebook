@@ -4,6 +4,7 @@ tags:
   - rl
   - policy-optimization
   - llm
+description: "GRPO（Group Relative Policy Optimization）是一种基于组内相对比较来更新策略的方法。它的直觉是：面对同一个 prompt，不是只看单个回答的绝对分数，而是把一组回答放在一起比较，鼓励模型朝着“组内更优”的方向更新。"
 category: "basics"
 date: "2026-07-09"
 updated: "2026-07-09"
