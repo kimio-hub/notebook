@@ -4,6 +4,8 @@ import { unified } from "@astrojs/markdown-remark"
 import remarkMath from "remark-math"
 import rehypeKatex from "rehype-katex"
 
+import cloudflare from "@astrojs/cloudflare";
+
 // https://astro.build/config
 // Cloudflare Pages: build command `npm run build`, output directory `dist`
 export default defineConfig({
@@ -11,6 +13,7 @@ export default defineConfig({
   output: "static",
   outDir: "dist",
   integrations: [sitemap()],
+
   markdown: {
     processor: unified({
       remarkPlugins: [remarkMath],
@@ -21,6 +24,7 @@ export default defineConfig({
       wrap: true,
     },
   },
+
   vite: {
     server: {
       watch: {
@@ -28,4 +32,6 @@ export default defineConfig({
       },
     },
   },
+
+  adapter: cloudflare(),
 })
