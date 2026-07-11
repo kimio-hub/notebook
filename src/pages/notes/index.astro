@@ -1,26 +1,4 @@
 ---
-import BaseLayout from "../../layouts/BaseLayout.astro"
-import NoteCard from "../../components/NoteCard.astro"
-import { getPublishedNotes } from "../../lib/notes"
-
-const notes = await getPublishedNotes()
-const basicsCount = notes.filter((n) => n.data.category === "basics").length
-const papersCount = notes.filter((n) => n.data.category === "papers").length
+import NotesListPage from "../../views/NotesListPage.astro"
 ---
-
-<BaseLayout title="全部笔记" description="Kimio 的公开学习笔记：强化学习与大语言模型。">
-  <header class="page-intro">
-    <h1>全部笔记</h1>
-    <p>公开笔记按「基础」与「论文精读」分类。可按分类浏览，或直接点进卡片阅读。</p>
-  </header>
-
-  <div class="filter-bar" aria-label="笔记分类">
-    <a href="/notes/" class="active">全部 ({notes.length})</a>
-    <a href="/notes/basics/">基础 ({basicsCount})</a>
-    <a href="/notes/papers/">论文 ({papersCount})</a>
-  </div>
-
-  <div class="card-grid">
-    {notes.map((note) => <NoteCard note={note} />)}
-  </div>
-</BaseLayout>
+<NotesListPage lang="zh" />

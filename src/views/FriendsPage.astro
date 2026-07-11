@@ -1,0 +1,80 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro"
+import { friendDescription, friendGuide, friends, friendTags } from "../data/friends"
+import type { Locale } from "../i18n/config"
+import { t } from "../i18n/utils"
+
+interface Props {
+  lang: Locale
+}
+
+const { lang } = Astro.props
+const guide = friendGuide(lang)
+
+function initial(name: string) {
+  return name.trim().charAt(0).toUpperCase()
+}
+---
+
+<BaseLayout lang={lang} title={t(lang, "friends.title")} description={t(lang, "friends.desc")}>
+  <header class="page-intro">
+    <h1>{t(lang, "friends.title")}</h1>
+    <p>{t(lang, "friends.intro")}</p>
+  </header>
+
+  <div class="card-grid">
+    {
+      friends.map((friend) => (
+        <a class="friend-card" href={friend.url} target="_blank" rel="noopener noreferrer">
+          {friend.avatar ? (
+            <img class="friend-avatar" src={friend.avatar} alt="" width="52" height="52" />
+          ) : (
+            <div class="friend-avatar" aria-hidden="true">
+              {initial(friend.name)}
+            </div>
+          )}
+          <div style="min-width: 0;">
+            <div class="meta">
+              {friendTags(friend, lang)?.map((tag) => (
+                <span class="tag">{tag}</span>
+              ))}
+            </div>
+            <h3 style="margin-top: 0.35rem;">{friend.name}</h3>
+            <p>{friendDescription(friend, lang)}</p>
+            <div class="meta" style="margin-top: 0.45rem; word-break: break-all;">
+              {friend.url.replace(/^https?:\/\//, "")}
+            </div>
+          </div>
+        </a>
+      ))
+    }
+  </div>
+
+  <section class="friend-guide">
+    <h2>{guide.title}</h2>
+    <p style="margin: 0; color: var(--ink-soft);">{guide.intro}</p>
+    {
+      guide.requirements?.length ? (
+        <ul>
+          {guide.requirements.map((item) => (
+            <li>{item}</li>
+          ))}
+        </ul>
+      ) : null
+    }
+
+    <p style="margin: 0 0 0.5rem; font-weight: 700; color: var(--ink);">{t(lang, "friends.mine")}</p>
+    <div class="mine-card">
+      <div><strong>{t(lang, "friends.name")}</strong>{guide.mine.name}</div>
+      <div><strong>{t(lang, "friends.link")}</strong><code>{guide.mine.url}</code></div>
+      <div><strong>{t(lang, "friends.blurb")}</strong>{guide.mine.description}</div>
+      <div><strong>{t(lang, "friends.avatar")}</strong><code>{guide.mine.avatar}</code></div>
+    </div>
+
+    <p style="margin: 0.9rem 0 0; color: var(--muted); font-size: 0.92rem;">
+      {guide.contact}
+      {" "}
+      {t(lang, "friends.editHint")}
+    </p>
+  </section>
+</BaseLayout>

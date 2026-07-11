@@ -1,0 +1,128 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro"
+import {
+  isExternalHref,
+  projectDescription,
+  projectHref,
+  projectLinkLabel,
+  projects,
+  projectTitle,
+  statusLabel,
+} from "../data/projects"
+import { site } from "../data/site"
+import type { Locale } from "../i18n/config"
+import { t } from "../i18n/utils"
+
+interface Props {
+  lang: Locale
+}
+
+const { lang } = Astro.props
+const sorted = [...projects].sort((a, b) => (b.date ?? "").localeCompare(a.date ?? ""))
+const completed = sorted.filter((p) => p.status === "completed").length
+---
+
+<BaseLayout lang={lang} title={t(lang, "projects.title")} description={t(lang, "projects.desc")}>
+  <header class="page-intro">
+    <h1>{t(lang, "projects.title")}</h1>
+    <p>{t(lang, "projects.intro")}</p>
+  </header>
+
+  <div
+    class="hero-side"
+    style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:0.75rem;margin-bottom:1.4rem;"
+  >
+    <div class="panel stat-card">
+      <div class="label">{t(lang, "projects.all")}</div>
+      <div class="value">{sorted.length}</div>
+    </div>
+    <div class="panel stat-card">
+      <div class="label">{t(lang, "projects.completed")}</div>
+      <div class="value">{completed}</div>
+    </div>
+  </div>
+
+  {
+    sorted.length === 0 ? (
+      <p style="color: var(--muted);">{t(lang, "projects.empty")}</p>
+    ) : (
+      <div class="card-grid project-grid">
+        {sorted.map((project) => {
+          const href = projectHref(project, lang)
+          const external = isExternalHref(project.href)
+          return (
+            <article class="project-card">
+              <div class="meta">
+                <span
+                  class={`tag ${project.status === "completed" ? "tag-brand" : project.status === "wip" ? "tag-accent" : ""}`}
+                >
+                  {statusLabel(project.status, lang)}
+                </span>
+                {project.date && <time>{project.date}</time>}
+              </div>
+              <h3>
+                <a href={href} target={external ? "_blank" : undefined} rel={external ? "noopener noreferrer" : undefined}>
+                  {projectTitle(project, lang)}
+                </a>
+              </h3>
+              <p>{projectDescription(project, lang)}</p>
+              {project.tags && project.tags.length > 0 && (
+                <div class="tags">
+                  {project.tags.map((tag) => (
+                    <span class="tag">#{tag}</span>
+                  ))}
+                </div>
+              )}
+              <div class="project-actions">
+                <a
+                  class="btn btn-primary"
+                  href={href}
+                  target={external ? "_blank" : undefined}
+                  rel={external ? "noopener noreferrer" : undefined}
+                >
+                  {external ? t(lang, "projects.viewDetails") : t(lang, "projects.readReport")}
+                </a>
+                {project.links
+                  ?.filter((l) => l.href !== project.href)
+                  .map((link) => {
+                    const linkExt = isExternalHref(link.href)
+                    return (
+                      <a
+                        class="btn btn-ghost"
+                        href={link.href}
+                        target={linkExt ? "_blank" : undefined}
+                        rel={linkExt ? "noopener noreferrer" : undefined}
+                      >
+                        {projectLinkLabel(link, lang)}
+                      </a>
+                    )
+                  })}
+              </div>
+            </article>
+          )
+        })}
+      </div>
+    )
+  }
+
+  <section class="friend-guide" style="margin-top: 2rem;">
+    <h2 style="margin:0 0 0.5rem;font-size:1.2rem;">{t(lang, "projects.more")}</h2>
+    <p style="margin:0;color:var(--ink-soft);">
+      {t(lang, "projects.moreBody")}
+      {
+        site.zhihu && (
+          <>
+            {" "}
+            <a href={site.zhihu} target="_blank" rel="noopener noreferrer">
+              {t(lang, "action.zhihu")}
+            </a>
+          </>
+        )
+      }
+      {" · "}
+      <a href={site.github} target="_blank" rel="noopener noreferrer">
+        {t(lang, "action.github")}
+      </a>
+    </p>
+  </section>
+</BaseLayout>

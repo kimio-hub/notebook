@@ -1,13 +1,15 @@
 ---
+import type { Locale } from "../i18n/config"
 import type { NoteEntry } from "../lib/notes"
 import { categoryLabel, excerptFromBody, formatDateShort, noteHref } from "../lib/notes"
 
 interface Props {
   note: NoteEntry
+  lang?: Locale
 }
 
-const { note } = Astro.props
-const href = noteHref(note)
+const { note, lang = "zh" } = Astro.props
+const href = noteHref(note, lang)
 const date = note.data.updated ?? note.data.date
 const summary = note.data.description ?? excerptFromBody(note.body)
 ---
@@ -15,7 +17,7 @@ const summary = note.data.description ?? excerptFromBody(note.body)
 <a class="note-card" href={href}>
   <div class="meta">
     <span class={`tag ${note.data.category === "papers" ? "tag-accent" : "tag-brand"}`}>
-      {categoryLabel(note.data.category)}
+      {categoryLabel(note.data.category, lang)}
     </span>
     {date && <time datetime={formatDateShort(date)}>{formatDateShort(date)}</time>}
   </div>

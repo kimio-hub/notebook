@@ -1,25 +1,4 @@
 ---
-import BaseLayout from "../../../layouts/BaseLayout.astro"
-import NoteCard from "../../../components/NoteCard.astro"
-import { getPublishedNotes } from "../../../lib/notes"
-
-const all = await getPublishedNotes()
-const notes = all.filter((n) => n.data.category === "papers")
+import NotesListPage from "../../../views/NotesListPage.astro"
 ---
-
-<BaseLayout title="论文精读" description="论文阅读笔记：推理增强、多模态检索与算法博弈论。">
-  <header class="page-intro">
-    <h1>论文精读</h1>
-    <p>研究什么、怎么做、为什么有效；也会记下还没想通的点。</p>
-  </header>
-
-  <div class="filter-bar" aria-label="笔记分类">
-    <a href="/notes/">全部 ({all.length})</a>
-    <a href="/notes/basics/">基础 ({all.filter((n) => n.data.category === "basics").length})</a>
-    <a href="/notes/papers/" class="active">论文 ({notes.length})</a>
-  </div>
-
-  <div class="card-grid">
-    {notes.map((note) => <NoteCard note={note} />)}
-  </div>
-</BaseLayout>
+<NotesListPage lang="zh" category="papers" />

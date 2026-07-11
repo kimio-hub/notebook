@@ -1,6 +1,6 @@
 ---
-import NoteDetailPage from "../../views/NoteDetailPage.astro"
-import { getPublishedNotes } from "../../lib/notes"
+import NoteDetailPage from "../../../views/NoteDetailPage.astro"
+import { getPublishedNotes } from "../../../lib/notes"
 
 export async function getStaticPaths() {
   const notes = await getPublishedNotes()
@@ -12,4 +12,4 @@ export async function getStaticPaths() {
 
 const { note } = Astro.props
 ---
-<NoteDetailPage lang="zh" note={note} />
+<NoteDetailPage lang="en" note={note} />

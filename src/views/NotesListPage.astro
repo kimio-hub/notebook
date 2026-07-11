@@ -1,0 +1,61 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro"
+import NoteCard from "../components/NoteCard.astro"
+import type { Locale } from "../i18n/config"
+import { localizePath, t } from "../i18n/utils"
+import { getPublishedNotes } from "../lib/notes"
+
+interface Props {
+  lang: Locale
+  category?: "basics" | "papers"
+}
+
+const { lang, category } = Astro.props
+const all = await getPublishedNotes()
+const notes = category ? all.filter((n) => n.data.category === category) : all
+const basicsCount = all.filter((n) => n.data.category === "basics").length
+const papersCount = all.filter((n) => n.data.category === "papers").length
+
+const title = category === "basics"
+  ? t(lang, "notes.basicsTitle")
+  : category === "papers"
+    ? t(lang, "notes.papersTitle")
+    : t(lang, "notes.title")
+
+const intro = category === "basics"
+  ? t(lang, "notes.basicsIntro")
+  : category === "papers"
+    ? t(lang, "notes.papersIntro")
+    : t(lang, "notes.intro")
+---
+
+<BaseLayout lang={lang} title={title} description={t(lang, "notes.desc")}>
+  <header class="page-intro">
+    <h1>{title}</h1>
+    <p>{intro}</p>
+  </header>
+
+  {
+    lang === "en" && (
+      <p class="panel about-panel" style="margin-bottom:1rem;padding:0.85rem 1rem;font-size:0.9rem;color:var(--muted);">
+        {t(lang, "notes.contentLangNote")}
+      </p>
+    )
+  }
+
+  <div class="filter-bar" aria-label={t(lang, "notes.filterAria")}>
+    <a href={localizePath("/notes/", lang)} class={!category ? "active" : undefined}>
+      {t(lang, "notes.all")} ({all.length})
+    </a>
+    <a href={localizePath("/notes/basics/", lang)} class={category === "basics" ? "active" : undefined}>
+      {t(lang, "notes.basics")} ({basicsCount})
+    </a>
+    <a href={localizePath("/notes/papers/", lang)} class={category === "papers" ? "active" : undefined}>
+      {t(lang, "notes.papers")} ({papersCount})
+    </a>
+  </div>
+
+  <div class="card-grid">
+    {notes.map((note) => <NoteCard note={note} lang={lang} />)}
+  </div>
+</BaseLayout>

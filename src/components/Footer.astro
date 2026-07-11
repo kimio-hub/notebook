@@ -1,24 +1,35 @@
 ---
-import { nav, site } from "../data/site"
+import type { Locale } from "../i18n/config"
+import { getNav, t } from "../i18n/utils"
+import { site, siteTagline } from "../data/site"
+
+interface Props {
+  lang: Locale
+}
+
+const { lang } = Astro.props
 const year = new Date().getFullYear()
+const nav = getNav(lang)
 ---
 
 <footer class="site-footer">
   <div class="container inner">
     <div>
       <strong style="color: var(--ink); font-family: var(--font-serif);">{site.name}</strong>
-      <div style="margin-top: 0.25rem;">{site.tagline}</div>
-      <div style="margin-top: 0.35rem;">© {year} · Built with Astro</div>
+      <div style="margin-top: 0.25rem;">{siteTagline(lang)}</div>
+      <div style="margin-top: 0.35rem;">{t(lang, "footer.built", { year })}</div>
     </div>
-    <nav aria-label="页脚导航">
+    <nav aria-label={t(lang, "nav.footer")}>
       {nav.map((item) => <a href={item.href}>{item.label}</a>)}
-      <a href={site.github} target="_blank" rel="noopener noreferrer">GitHub</a>
-      {site.zhihu && (
-        <a href={site.zhihu} target="_blank" rel="noopener noreferrer">
-          知乎
-        </a>
-      )}
-      {site.email && <a href={`mailto:${site.email}`}>邮箱</a>}
+      <a href={site.github} target="_blank" rel="noopener noreferrer">{t(lang, "action.github")}</a>
+      {
+        site.zhihu && (
+          <a href={site.zhihu} target="_blank" rel="noopener noreferrer">
+            {t(lang, "action.zhihu")}
+          </a>
+        )
+      }
+      {site.email && <a href={`mailto:${site.email}`}>{t(lang, "action.email")}</a>}
     </nav>
   </div>
 </footer>

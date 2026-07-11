@@ -1,15 +1,18 @@
 import { getCollection, type CollectionEntry } from "astro:content"
+import type { Locale } from "../i18n/config"
+import { t } from "../i18n/ui"
+import { localizePath } from "../i18n/utils"
 
 export type NoteEntry = CollectionEntry<"notes">
 
-export function noteHref(entry: NoteEntry): string {
-  // loader ids look like "basics/PPO" or "papers/DeepSeek-V3"
-  return `/notes/${entry.id.replace(/\/index$/, "")}/`
+export function noteHref(entry: NoteEntry, lang: Locale = "zh"): string {
+  const bare = `/notes/${entry.id.replace(/\/index$/, "")}/`
+  return localizePath(bare, lang)
 }
 
-export function formatDate(date?: Date): string {
+export function formatDate(date?: Date, lang: Locale = "zh"): string {
   if (!date) return ""
-  return date.toLocaleDateString("zh-CN", {
+  return date.toLocaleDateString(lang === "en" ? "en-US" : "zh-CN", {
     year: "numeric",
     month: "long",
     day: "numeric",
@@ -21,16 +24,15 @@ export function formatDateShort(date?: Date): string {
   return date.toISOString().slice(0, 10)
 }
 
-export function categoryLabel(category: string): string {
-  if (category === "basics") return "基础"
-  if (category === "papers") return "论文"
-  return "其他"
+export function categoryLabel(category: string, lang: Locale = "zh"): string {
+  if (category === "basics") return t(lang, "notes.categoryBasics")
+  if (category === "papers") return t(lang, "notes.categoryPapers")
+  return t(lang, "notes.categoryOther")
 }
 
 export async function getPublishedNotes(): Promise<NoteEntry[]> {
   const notes = await getCollection("notes", ({ data, id }) => {
     if (data.draft) return false
-    // skip folder markers / index files if any
     if (id.endsWith("/_folder") || id === "_folder") return false
     if (id.endsWith("/index") || id === "index") return false
     return true

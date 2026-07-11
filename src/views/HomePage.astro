@@ -1,0 +1,199 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro"
+import NoteCard from "../components/NoteCard.astro"
+import TimelineItem from "../components/TimelineItem.astro"
+import { changelog, type ChangelogItem } from "../data/changelog"
+import {
+  isExternalHref,
+  projectDescription,
+  projectHref,
+  projects,
+  projectTitle,
+  statusLabel,
+} from "../data/projects"
+import { site, siteBio, siteDescription, siteInterests, siteRole } from "../data/site"
+import type { Locale } from "../i18n/config"
+import { localizePath, t } from "../i18n/utils"
+import {
+  categoryLabel,
+  formatDateShort,
+  getPublishedNotes,
+} from "../lib/notes"
+
+interface Props {
+  lang: Locale
+}
+
+const { lang } = Astro.props
+const notes = await getPublishedNotes()
+const latestNotes = notes.slice(0, 6)
+const basicsCount = notes.filter((n) => n.data.category === "basics").length
+const papersCount = notes.filter((n) => n.data.category === "papers").length
+
+const noteUpdates: ChangelogItem[] = notes.slice(0, 5).map((note) => ({
+  date: formatDateShort(note.data.updated ?? note.data.date) || "2026-01-01",
+  title: t("zh", "notes.updatePrefix", { title: note.data.title }),
+  titleEn: t("en", "notes.updatePrefix", { title: note.data.title }),
+  summary: `${categoryLabel(note.data.category, "zh")} · ${note.data.tags?.slice(0, 3).join(" / ") || t("zh", "notes.updateFallback")}`,
+  summaryEn: `${categoryLabel(note.data.category, "en")} · ${note.data.tags?.slice(0, 3).join(" / ") || t("en", "notes.updateFallback")}`,
+  type: "note" as const,
+  href: `/notes/${note.id}/`,
+}))
+
+const feed = [...changelog, ...noteUpdates]
+  .sort((a, b) => b.date.localeCompare(a.date))
+  .slice(0, 6)
+
+const latestProjects = projects.slice(0, 3)
+---
+
+<BaseLayout lang={lang} title={site.title} description={siteDescription(lang)}>
+  <section class="hero">
+    <div class="hero-card">
+      <div class="hero-inner">
+        <img class="hero-avatar" src="/avatar.webp" alt={site.name} width="96" height="96" />
+        <div>
+          <p class="hero-kicker">{t(lang, "home.kicker")}</p>
+          <h1>{site.name}</h1>
+          <p class="hero-role">{siteRole(lang)}</p>
+          <p class="hero-lead">{siteBio(lang)}</p>
+          <div class="tag-row">
+            {siteInterests(lang).map((item) => <span class="tag">{item}</span>)}
+          </div>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href={localizePath("/notes/", lang)}>{t(lang, "home.browseNotes")}</a>
+            <a class="btn btn-ghost" href={localizePath("/projects/", lang)}>{t(lang, "home.projects")}</a>
+            <a class="btn btn-ghost" href={localizePath("/updates/", lang)}>{t(lang, "home.updates")}</a>
+            <a class="btn btn-ghost" href={localizePath("/friends/", lang)}>{t(lang, "home.friends")}</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-side">
+      <div class="panel stat-card">
+        <div class="label">{t(lang, "home.statNotes")}</div>
+        <div class="value">{notes.length}</div>
+        <div class="hint">{t(lang, "home.statNotesHint", { basics: basicsCount, papers: papersCount })}</div>
+      </div>
+      <div class="panel stat-card">
+        <div class="label">{t(lang, "home.statFeed")}</div>
+        <div class="value" style="font-size:1.25rem;margin-top:0.45rem;">
+          {feed[0] ? (lang === "en" ? feed[0].titleEn : feed[0].title) : t(lang, "home.statFeedEmpty")}
+        </div>
+        <div class="hint">{t(lang, "home.statFeedHint", { date: feed[0]?.date ?? "" })}</div>
+      </div>
+      <div class="panel stat-card">
+        <div class="label">GitHub</div>
+        <div class="value" style="font-size:1.35rem;margin-top:0.4rem;">@{site.githubUser}</div>
+        <div class="hint">
+          <a href={site.github} target="_blank" rel="noopener noreferrer">{t(lang, "home.openGithub")}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <h2>{t(lang, "home.recentUpdates")}</h2>
+        <p>{t(lang, "home.recentUpdatesDesc")}</p>
+      </div>
+      <a class="section-link" href={localizePath("/updates/", lang)}>{t(lang, "home.allUpdates")}</a>
+    </div>
+    <div class="timeline">
+      {feed.map((item) => <TimelineItem item={item} lang={lang} />)}
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <h2>{t(lang, "home.projectsSection")}</h2>
+        <p>{t(lang, "home.projectsDesc")}</p>
+      </div>
+      <a class="section-link" href={localizePath("/projects/", lang)}>{t(lang, "home.allProjects")}</a>
+    </div>
+    <div class="card-grid project-grid">
+      {
+        latestProjects.map((project) => {
+          const href = projectHref(project, lang)
+          const external = isExternalHref(project.href)
+          return (
+            <article class="project-card">
+              <div class="meta">
+                <span class="tag tag-brand">{statusLabel(project.status, lang)}</span>
+                {project.date && <time>{project.date}</time>}
+              </div>
+              <h3>
+                <a href={href} target={external ? "_blank" : undefined} rel={external ? "noopener noreferrer" : undefined}>
+                  {projectTitle(project, lang)}
+                </a>
+              </h3>
+              <p>{projectDescription(project, lang)}</p>
+              <div class="project-actions">
+                <a class="btn btn-primary" href={href} target={external ? "_blank" : undefined} rel={external ? "noopener noreferrer" : undefined}>
+                  {external ? t(lang, "home.viewDetails") : t(lang, "home.readReport")}
+                </a>
+                <a class="btn btn-ghost" href={localizePath("/projects/", lang)}>
+                  {t(lang, "home.projectsPage")}
+                </a>
+              </div>
+            </article>
+          )
+        })
+      }
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <h2>{t(lang, "home.featuredNotes")}</h2>
+        <p>{t(lang, "home.featuredNotesDesc")}</p>
+      </div>
+      <a class="section-link" href={localizePath("/notes/", lang)}>{t(lang, "home.allNotes")}</a>
+    </div>
+    {
+      lang === "en" && (
+        <p class="panel about-panel" style="margin-bottom:1rem;padding:0.85rem 1rem;font-size:0.9rem;color:var(--muted);">
+          {t(lang, "notes.contentLangNote")}
+        </p>
+      )
+    }
+    <div class="card-grid">
+      {latestNotes.map((note) => <NoteCard note={note} lang={lang} />)}
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <h2>{t(lang, "home.quickLinks")}</h2>
+        <p>{t(lang, "home.quickLinksDesc")}</p>
+      </div>
+    </div>
+    <div class="card-grid">
+      <a class="note-card" href={localizePath("/notes/basics/", lang)}>
+        <div class="meta"><span class="tag tag-brand">{t(lang, "home.tagBasics")}</span></div>
+        <h3>{t(lang, "home.cardBasics")}</h3>
+        <p>{t(lang, "home.cardBasicsDesc")}</p>
+      </a>
+      <a class="note-card" href={localizePath("/notes/papers/", lang)}>
+        <div class="meta"><span class="tag tag-accent">{t(lang, "home.tagPapers")}</span></div>
+        <h3>{t(lang, "home.cardPapers")}</h3>
+        <p>{t(lang, "home.cardPapersDesc")}</p>
+      </a>
+      <a class="note-card" href={localizePath("/projects/", lang)}>
+        <div class="meta"><span class="tag tag-brand">{t(lang, "home.tagWorks")}</span></div>
+        <h3>{t(lang, "home.cardProjects")}</h3>
+        <p>{t(lang, "home.cardProjectsDesc")}</p>
+      </a>
+      <a class="note-card" href={localizePath("/friends/", lang)}>
+        <div class="meta"><span class="tag">{t(lang, "home.tagCommunity")}</span></div>
+        <h3>{t(lang, "home.cardFriends")}</h3>
+        <p>{t(lang, "home.cardFriendsDesc")}</p>
+      </a>
+    </div>
+  </section>
+</BaseLayout>

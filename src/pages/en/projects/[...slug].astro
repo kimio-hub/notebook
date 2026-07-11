@@ -1,6 +1,6 @@
 ---
 import { getCollection } from "astro:content"
-import ProjectDetailPage from "../../views/ProjectDetailPage.astro"
+import ProjectDetailPage from "../../../views/ProjectDetailPage.astro"
 
 export async function getStaticPaths() {
   const writeups = await getCollection("writeups", ({ data }) => !data.draft)
@@ -12,4 +12,4 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props
 ---
-<ProjectDetailPage lang="zh" entry={entry} />
+<ProjectDetailPage lang="en" entry={entry} />

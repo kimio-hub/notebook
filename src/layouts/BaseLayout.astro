@@ -3,26 +3,33 @@ import "../styles/global.css"
 import "katex/dist/katex.min.css"
 import Header from "../components/Header.astro"
 import Footer from "../components/Footer.astro"
-import { site } from "../data/site"
+import { htmlLang, type Locale } from "../i18n/config"
+import { getLocaleFromUrl, t } from "../i18n/utils"
+import { homeTitle, site, siteDescription } from "../data/site"
 
 interface Props {
   title?: string
   description?: string
   image?: string
+  lang?: Locale
 }
 
+const lang = Astro.props.lang ?? getLocaleFromUrl(Astro.url)
 const {
   title = site.title,
-  description = site.description,
+  description = siteDescription(lang),
   image = "/avatar.webp",
 } = Astro.props
 
-const pageTitle = title === site.title ? `${site.name} · 个人主页` : `${title} · ${site.name}`
+const pageTitle =
+  title === site.title || title === homeTitle(lang)
+    ? homeTitle(lang)
+    : `${title} · ${site.name}`
 const canonical = new URL(Astro.url.pathname, site.url).toString()
 ---
 
 <!doctype html>
-<html lang={site.lang}>
+<html lang={htmlLang[lang]}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -36,6 +43,7 @@ const canonical = new URL(Astro.url.pathname, site.url).toString()
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={new URL(image, site.url).toString()} />
+    <meta property="og:locale" content={htmlLang[lang]} />
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={description} />
@@ -63,14 +71,14 @@ const canonical = new URL(Astro.url.pathname, site.url).toString()
     </script>
   </head>
   <body>
-    <Header />
+    <Header lang={lang} />
     <main class="site-main">
       <div class="container">
         <slot />
       </div>
     </main>
-    <Footer />
-    <script is:inline>
+    <Footer lang={lang} />
+    <script is:inline define:vars={{ menuOpen: t(lang, "action.menuOpen"), menuClose: t(lang, "action.menuClose") }}>
       ;(() => {
         const key = "kimio-theme"
         const btn = document.getElementById("theme-toggle")
@@ -97,7 +105,7 @@ const canonical = new URL(Astro.url.pathname, site.url).toString()
         const setMenuOpen = (open) => {
           nav?.classList.toggle("open", open)
           toggle?.setAttribute("aria-expanded", String(open))
-          toggle?.setAttribute("aria-label", open ? "关闭菜单" : "打开菜单")
+          toggle?.setAttribute("aria-label", open ? menuClose : menuOpen)
         }
 
         toggle?.addEventListener("click", () => {
