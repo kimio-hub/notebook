@@ -17,64 +17,62 @@ function initial(name: string) {
 ---
 
 <BaseLayout lang={lang} title={t(lang, "friends.title")} description={t(lang, "friends.desc")}>
-  <header class="page-intro">
-    <h1>{t(lang, "friends.title")}</h1>
-    <p>{t(lang, "friends.intro")}</p>
-  </header>
+  <div class="container page">
+    <header class="page-header">
+      <p class="eyebrow">{t(lang, "friends.eyebrow")}</p>
+      <h1>{t(lang, "friends.title")}</h1>
+      <p class="intro">{t(lang, "friends.intro")}</p>
+    </header>
 
-  <div class="card-grid">
-    {
-      friends.map((friend) => (
-        <a class="friend-card" href={friend.url} target="_blank" rel="noopener noreferrer">
-          {friend.avatar ? (
-            <img class="friend-avatar" src={friend.avatar} alt="" width="52" height="52" />
-          ) : (
-            <div class="friend-avatar" aria-hidden="true">
-              {initial(friend.name)}
+    <ul class="friend-list">
+      {
+        friends.map((friend) => (
+          <li class="friend">
+            {friend.avatar ? (
+              <img class="friend-avatar" src={friend.avatar} alt="" width="48" height="48" />
+            ) : (
+              <span class="friend-avatar" aria-hidden="true">{initial(friend.name)}</span>
+            )}
+            <div>
+              <h2 class="entry-title">
+                <a href={friend.url} target="_blank" rel="noopener noreferrer">{friend.name}</a>
+              </h2>
+              <p class="entry-dek">{friendDescription(friend, lang)}</p>
+              <p class="entry-meta">
+                <span class="friend-url">{friend.url.replace(/^https?:\/\//, "").replace(/\/$/, "")}</span>
+                {friendTags(friend, lang)?.length ? (
+                  <span class="tag-list">
+                    {friendTags(friend, lang)?.map((tag) => (
+                      <span>{tag}</span>
+                    ))}
+                  </span>
+                ) : null}
+              </p>
             </div>
-          )}
-          <div style="min-width: 0;">
-            <div class="meta">
-              {friendTags(friend, lang)?.map((tag) => (
-                <span class="tag">{tag}</span>
-              ))}
-            </div>
-            <h3 style="margin-top: 0.35rem;">{friend.name}</h3>
-            <p>{friendDescription(friend, lang)}</p>
-            <div class="meta" style="margin-top: 0.45rem; word-break: break-all;">
-              {friend.url.replace(/^https?:\/\//, "")}
-            </div>
-          </div>
-        </a>
-      ))
-    }
+          </li>
+        ))
+      }
+    </ul>
+
+    <section class="note-panel">
+      <h2>{guide.title}</h2>
+      <p style="margin:0">{guide.intro}</p>
+      {
+        guide.requirements?.length ? (
+          <ul>
+            {guide.requirements.map((item) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+        ) : null
+      }
+      <dl>
+        <dt>{t(lang, "friends.name")}</dt><dd>{guide.mine.name}</dd>
+        <dt>{t(lang, "friends.link")}</dt><dd><code>{guide.mine.url}</code></dd>
+        <dt>{t(lang, "friends.blurb")}</dt><dd>{guide.mine.description}</dd>
+        <dt>{t(lang, "friends.avatar")}</dt><dd><code>{guide.mine.avatar}</code></dd>
+      </dl>
+      <p style="margin:16px 0 0;color:var(--muted)">{guide.contact}</p>
+    </section>
   </div>
-
-  <section class="friend-guide">
-    <h2>{guide.title}</h2>
-    <p style="margin: 0; color: var(--ink-soft);">{guide.intro}</p>
-    {
-      guide.requirements?.length ? (
-        <ul>
-          {guide.requirements.map((item) => (
-            <li>{item}</li>
-          ))}
-        </ul>
-      ) : null
-    }
-
-    <p style="margin: 0 0 0.5rem; font-weight: 700; color: var(--ink);">{t(lang, "friends.mine")}</p>
-    <div class="mine-card">
-      <div><strong>{t(lang, "friends.name")}</strong>{guide.mine.name}</div>
-      <div><strong>{t(lang, "friends.link")}</strong><code>{guide.mine.url}</code></div>
-      <div><strong>{t(lang, "friends.blurb")}</strong>{guide.mine.description}</div>
-      <div><strong>{t(lang, "friends.avatar")}</strong><code>{guide.mine.avatar}</code></div>
-    </div>
-
-    <p style="margin: 0.9rem 0 0; color: var(--muted); font-size: 0.92rem;">
-      {guide.contact}
-      {" "}
-      {t(lang, "friends.editHint")}
-    </p>
-  </section>
 </BaseLayout>

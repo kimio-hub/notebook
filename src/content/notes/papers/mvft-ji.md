@@ -3,7 +3,7 @@ title: "MVFT-JI"
 tags:
   - cir
   - multimodal
-description: "> 论文：MLLM-Guided VLM Fine-Tuning with Joint Inference for Zero-Shot Composed Image Retrieval > arXiv:2505.19707 > 方法名：MVFT-JI > 任务：Zero-Shot Composed Image Retr…"
+description: "MVFT-JI 关注 zero-shot CIR 中 adapter/pseudo-token 方法的不足：这些方法通常只把 reference image 映射成 text encoder 可接受的伪文本 token，但没有直接优化 composed query representation 与目标语义的对齐，导致复…"
 category: "papers"
 date: "2026-07-09"
 updated: "2026-07-09"

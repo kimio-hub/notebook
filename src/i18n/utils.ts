@@ -52,7 +52,6 @@ export function getNav(lang: Locale) {
     { label: t(lang, "nav.notes"), href: localizePath("/notes/", lang) },
     { label: t(lang, "nav.projects"), href: localizePath("/projects/", lang) },
     { label: t(lang, "nav.updates"), href: localizePath("/updates/", lang) },
-    { label: t(lang, "nav.friends"), href: localizePath("/friends/", lang) },
     { label: t(lang, "nav.about"), href: localizePath("/about/", lang) },
   ]
 }

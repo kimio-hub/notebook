@@ -1,0 +1,195 @@
+{
+  "draftsDir": "E:/study/workflow/learning blog",
+  "notesDir": "E:/study/workflow/论文笔记",
+  "attachmentDirs": ["E:/study"],
+  "entries": [
+    {
+      "source": "frontier RL blog.md",
+      "target": "blog/frontier-rl-algorithms.md",
+      "title": "Frontier RL 算法学习：FlashREINFORCE、RPG、BPO、GPM",
+      "description": "从 REINFORCE 出发，梳理 FlashREINFORCE、RPG、BPO 与 GPM 各自在解决什么问题，并区分推导中严格成立与开始近似的部分。",
+      "tags": ["rl", "policy-gradient", "async-rl", "preference"],
+      "category": "blog",
+      "feature": true
+    },
+    {
+      "source": "OPD的脉络梳理.md",
+      "target": "blog/opd-lineage.md",
+      "title": "On-Policy Distillation 的脉络梳理",
+      "description": "用统一的状态分布框架串起 GKD、MiniLLM、OPSD、G-OPD 到 Agentic OPD：OPD 的演化主线不是换一种 KL，而是状态分布、教师构造与 credit 的连续修正。",
+      "tags": ["distillation", "post-training", "rl"],
+      "category": "blog",
+      "feature": true
+    },
+    {
+      "source": "KIMI K3 tech report.md",
+      "target": "blog/kimi-k3.md",
+      "title": "Kimi K3 技术报告：沿 length、depth 与 width 扩展信息流",
+      "description": "拆解 Kimi K3 的 2.8T MoE 架构：KDA–Gated MLA 混合注意力、Attention Residuals、Stable LatentMoE、原生视觉与训练基础设施。",
+      "tags": ["llm", "moe", "architecture", "tech-report"],
+      "category": "blog",
+      "captions": {
+        "Pasted image 20260728150250.png": "Kimi K3 整体架构：三层 KDA 接一层 Gated MLA，每个注意力层后接 Stable LatentMoE；右侧粉色连线为跨 block 的 Attention Residuals。"
+      }
+    },
+    {
+      "source": "reading paper/同一把尺子量不同的token：LLM后训练中更新尺度与token概率失配综述.md",
+      "target": "blog/token-scale-mismatch.md",
+      "title": "同一把尺子，量不同的 token：后训练中的更新尺度与概率失配",
+      "description": "从 DFT 与 RIPO 出发，用四种“变化量”统一梳理 SFT 与 RL 中更新尺度与 token 概率失配的问题，以及各方法的修正思路。",
+      "tags": ["post-training", "rl", "sft", "survey"],
+      "category": "blog"
+    },
+    {
+      "source": "reading paper/industry model training/工业界大模型训练学习笔记_DeepSeekV4_MAIThinking1.md",
+      "target": "blog/industry-llm-training.md",
+      "title": "工业界大模型训练：DeepSeek-V4 与 MAI-Thinking-1",
+      "description": "从两份技术报告学习现代大模型的完整工程链路：数据、架构、预训练、中期训练、后训练与 RL、训练与推理基础设施、安全评测。",
+      "tags": ["llm", "pretraining", "post-training", "infra", "tech-report"],
+      "category": "blog"
+    },
+    {
+      "source": "reading paper/论文阅读：谱不动，方向转：RLVR 到底改了权重的什么？ISO AnRLVR-NativeOptimizationStack.md",
+      "target": "papers/ISO-RLVR.md",
+      "title": "谱不动，方向转：RLVR 到底改了权重的什么？",
+      "description": "ISO 论文阅读：RLVR 的权重更新几乎只旋转奇异向量、不改变奇异值谱，作者据此提出 ISO-Optimizer 与免数据的 ISO-Merger。",
+      "tags": ["rlvr", "optimization", "model-merging"],
+      "category": "papers"
+    },
+    {
+      "source": "reading paper/SEED SELF-EVOLVINGON-POLICY DISTILLATION FOR AGENTIC REINFORCEMENT LEARNING.md",
+      "target": "papers/SEED.md",
+      "title": "SEED：面向 Agentic RL 的自演化 On-Policy 蒸馏",
+      "description": "SEED 让模型自己生成 hindsight skill，用“看到技能的自己”当教师给出 token 级蒸馏权重，再与 GRPO 的轨迹级奖励联合训练。",
+      "tags": ["agentic-rl", "distillation", "grpo"],
+      "category": "papers"
+    },
+    {
+      "source": "reading paper/DPO.md",
+      "target": "papers/DPO.md",
+      "title": "DPO：你的语言模型其实是一个奖励模型",
+      "description": "把 KL 约束下的 RLHF 改写成偏好对上的直接优化：DPO 损失的推导、直觉、优势与局限。",
+      "tags": ["alignment", "preference", "rlhf"],
+      "category": "papers"
+    },
+    {
+      "source": "reinforence learning/RL初印象.md",
+      "target": "basics/RL-Intro.md",
+      "title": "强化学习初印象",
+      "description": "从 MDP、策略、价值函数与 Bellman 方程，到蒙特卡洛、TD、函数近似与 Actor-Critic：强化学习的基本问题地图。",
+      "tags": ["rl", "basics"],
+      "category": "basics"
+    },
+    {
+      "source": "cs 336/lecture 3 architectures.md",
+      "target": "courses/cs336/lecture-03-architectures.md",
+      "assets": "cs336",
+      "title": "CS336 Lecture 3：架构与超参数",
+      "description": "从原始 Transformer 到现代变体：Pre-Norm、RMSNorm、SwiGLU、RoPE 等架构选择，以及各类超参数的经验取值。",
+      "tags": ["cs336", "transformer", "architecture"],
+      "category": "courses",
+      "series": "CS336",
+      "captions": {
+        "Pasted image 20260707192956.png": "CS336 作业中实现的现代 Transformer 变体：Pre-Norm、RoPE、SwiGLU，线性层不带 bias。",
+        "Pasted image 20260707193451.png": "Post-Norm（左）与 Pre-Norm（右）的残差结构对比，图源 Xiong et al., 2020。",
+        "Pasted image 20260707193154.png": "近年主流大模型的架构选择汇总：归一化、并行层、位置编码、激活函数与 MLP 比例。"
+      }
+    },
+    {
+      "source": "cs 336/lecture 4 attention and moe.md",
+      "target": "courses/cs336/lecture-04-attention-moe.md",
+      "assets": "cs336",
+      "title": "CS336 Lecture 4：注意力替代方案与混合专家",
+      "description": "长上下文下的线性注意力、状态空间模型与混合架构，以及 MoE 的路由、负载均衡与 DeepSeek 系列设计。",
+      "tags": ["cs336", "attention", "moe"],
+      "category": "courses",
+      "series": "CS336"
+    },
+    {
+      "source": "cs 336/lecture 5  GPU.md",
+      "target": "courses/cs336/lecture-05-gpu.md",
+      "assets": "cs336/lecture5",
+      "title": "CS336 Lecture 5：GPU",
+      "description": "为什么 GPU 有时莫名变慢：存储层次、roofline、coalescing、tiling 与算子融合，以及 FlashAttention 为什么快。",
+      "tags": ["cs336", "gpu", "systems"],
+      "category": "courses",
+      "series": "CS336"
+    },
+    {
+      "source": "cs 336/lecture 6 kernels and triton.md",
+      "target": "courses/cs336/lecture-06-kernels-triton.md",
+      "assets": "cs336",
+      "title": "CS336 Lecture 6：Kernel、性能分析与 Triton",
+      "description": "先 benchmark，再 profile，最后用 Triton 写 kernel：把对 GPU 硬件的理解变成真正跑得更快的程序。",
+      "tags": ["cs336", "triton", "systems"],
+      "category": "courses",
+      "series": "CS336"
+    },
+    {
+      "source": "cs 336/lecture 7 distributed parallelism.md",
+      "target": "courses/cs336/lecture-07-distributed.md",
+      "assets": "cs336",
+      "title": "CS336 Lecture 7：分布式并行",
+      "description": "从 collective communication 出发，用最小 PyTorch 代码搭出数据并行、张量并行与流水线并行。",
+      "tags": ["cs336", "distributed", "systems"],
+      "category": "courses",
+      "series": "CS336"
+    },
+    {
+      "source": "cs 336/lecture 8 parallelism basics and large scale training.md",
+      "target": "courses/cs336/lecture-08-parallelism.md",
+      "assets": "cs336",
+      "title": "CS336 Lecture 8：并行基础与大规模训练",
+      "description": "网络与 collective、ZeRO/FSDP、PP/TP/SP/CP/EP，一路到 3D/4D 并行与真实大模型的训练配置。",
+      "tags": ["cs336", "distributed", "training"],
+      "category": "courses",
+      "series": "CS336"
+    },
+    {
+      "source": "cs 336/scaling laws complete notes.md",
+      "target": "courses/cs336/scaling-laws.md",
+      "assets": "cs336",
+      "title": "CS336 Scaling Laws 完整笔记",
+      "description": "覆盖 Lecture 9 与 11：从幂律是什么，到怎样用小实验决定大模型的参数量、数据量、学习率和 batch size。",
+      "tags": ["cs336", "scaling-laws"],
+      "category": "courses",
+      "series": "CS336"
+    },
+    {
+      "source": "cs 336/inference complete notes.md",
+      "target": "courses/cs336/inference.md",
+      "assets": "cs336",
+      "title": "CS336 Inference 完整笔记",
+      "description": "从一次请求进入服务开始：推理为什么慢、显存花在哪里、KV cache 与 vLLM 类系统如何提高吞吐。",
+      "tags": ["cs336", "inference", "systems"],
+      "category": "courses",
+      "series": "CS336"
+    },
+    {
+      "source": "cs 336/system part in CS336.md",
+      "target": "courses/cs336/systems-summary.md",
+      "assets": "cs336",
+      "title": "CS336 System 部分纪要",
+      "description": "单卡把数据搬近计算，多卡把通信放在快链路上：重算、本地显存与跨设备通信的三选一。",
+      "tags": ["cs336", "systems", "gpu"],
+      "category": "courses",
+      "series": "CS336",
+      "captions": {
+        "Pasted image 20260711153205.png": "TorchInductor 算子融合：sin、cos、pow、add 等多个逐元素算子被合成一个 kernel。",
+        "Pasted image 20260711153824.png": "分块矩阵乘（tiling）：每个输出块只需读入对应的行块与列块。",
+        "Pasted image 20260711154736.png": "GPU 存储层次与 FlashAttention 的分块计算：注意力块在 SRAM 中完成，N×N 矩阵不写回 HBM。",
+        "Pasted image 20260711154909.png": "在线 softmax：按块累积分母并重新缩放已有输出，从而无需物化完整的注意力矩阵。"
+      }
+    },
+    {
+      "source": "cs 336/assignment 1.md",
+      "target": "courses/cs336/assignment-1-tokenizer.md",
+      "assets": "cs336",
+      "title": "CS336 Assignment 1：BPE 分词器实现",
+      "description": "Byte-level BPE 的训练与编解码流程：special token 切分、regex 预分词、merge 学习，以及对应的实现代码。",
+      "tags": ["cs336", "tokenizer", "bpe"],
+      "category": "courses",
+      "series": "CS336"
+    }
+  ]
+}

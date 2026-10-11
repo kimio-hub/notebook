@@ -1,4 +1,4 @@
-import { access, mkdir, readdir, readFile, rename, rm, stat, writeFile } from "node:fs/promises"
+import { access, cp, mkdir, readdir, readFile, rename, rm, stat, writeFile } from "node:fs/promises"
 import { fileURLToPath } from "node:url"
 import path from "node:path"
 
@@ -138,6 +138,8 @@ function plainText(value) {
     .replace(/!\[[^\]]*\]\([^)]+\)/g, " ")
     .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
     .replace(/<[^>]+>/g, " ")
+    .replace(/^\s*(?:>\s*)+/gm, "")
+    .replace(/^\s*(?:[-+*]|\d+[.)])\s+/gm, "")
     .replace(/[`*_~]/g, " ")
     .replace(/\s+/g, " ")
     .replace(/\s+([,.;:!?，。；：！？])/g, "$1")
@@ -151,8 +153,11 @@ export function descriptionFromMarkdown(content, maxLength = 160) {
     .replace(/```[\s\S]*?```|~~~[\s\S]*?~~~/g, " ")
     .replace(/\$\$[\s\S]*?\$\$/g, " ")
     .replace(/^\s*#{1,6}\s+.*$/gm, "\n")
-  const paragraphs = prose.split(/\n\s*\n/).map(plainText).filter((value) => value.length >= 20)
-  const text = paragraphs[0] ?? plainText(prose) ?? plainText(body)
+  const blocks = prose.split(/\n\s*\n/)
+  // Prefer real prose over metadata blockquotes ("> 论文：… > 会议：…") and tables.
+  const isProse = (block) => !/^\s*(?:>|\|)/.test(block)
+  const pick = (list) => list.map(plainText).filter((value) => value.length >= 20)[0]
+  const text = pick(blocks.filter(isProse)) ?? pick(blocks) ?? plainText(prose)
   if (text.length <= maxLength) return text
   return `${text.slice(0, maxLength).trimEnd()}…`
 }
@@ -236,10 +241,19 @@ export function rewriteWikiLinks(content, index, currentRelative, onWarning = co
   })
 }
 
+const noteCategories = ["blog", "papers", "courses", "basics"]
+
 function categoryFromRelative(relative) {
   const top = normalize(relative).split("/")[0].toLowerCase()
-  if (top === "basics" || top === "papers") return top
-  return "other"
+  return noteCategories.includes(top) ? top : "other"
+}
+
+async function replaceContents(tempRoot, destinationRoot) {
+  for (const entry of await readdir(destinationRoot)) {
+    await rm(path.join(destinationRoot, entry), { recursive: true, force: true })
+  }
+  await cp(tempRoot, destinationRoot, { recursive: true })
+  await rm(tempRoot, { recursive: true, force: true })
 }
 
 async function commitDirectory(tempRoot, destinationRoot) {
@@ -247,7 +261,17 @@ async function commitDirectory(tempRoot, destinationRoot) {
   const backupRoot = `${destinationRoot}.backup-${suffix}`
   const hadExisting = await pathExists(destinationRoot)
 
-  if (hadExisting) await rename(destinationRoot, backupRoot)
+  if (hadExisting) {
+    try {
+      await rename(destinationRoot, backupRoot)
+    } catch (error) {
+      // Windows refuses to rename a folder another process is watching (e.g. `astro dev`).
+      // Fall back to swapping the folder's contents in place.
+      if (!["EPERM", "EBUSY", "EACCES"].includes(error.code)) throw error
+      await replaceContents(tempRoot, destinationRoot)
+      return
+    }
+  }
   try {
     await rename(tempRoot, destinationRoot)
   } catch (error) {
@@ -317,7 +341,7 @@ export async function syncFromSource(sourceDir, options = {}) {
       const body = page.description ? String(page.description).replace(/<[^>]+>/g, "") : ""
       await writeFile(
         path.join(targetDir, "_folder.md"),
-        `---\ntitle: ${JSON.stringify(page.title)}\ndraft: true\ncategory: ${folder === "papers" ? "papers" : folder === "basics" ? "basics" : "other"}\n---\n\n${body}\n`,
+        `---\ntitle: ${JSON.stringify(page.title)}\ndraft: true\ncategory: ${categoryFromRelative(folder)}\n---\n\n${body}\n`,
         "utf8",
       )
     }

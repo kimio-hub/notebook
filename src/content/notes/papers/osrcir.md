@@ -4,7 +4,7 @@ tags:
   - cir
   - multimodal
   - reasoning
-description: "> 论文：Reason-before-Retrieve: One-Stage Reflective Chain-of-Thoughts for Training-Free Zero-Shot Composed Image Retrieval > 会议：CVPR 2025 > 方法名：OSrCIR > 代码：https:…"
+description: "OSrCIR 研究 training-free zero-shot CIR。已有训练免费方法通常采用两阶段流程：先用 image captioner 给参考图像生成 caption，再让 LLM 根据 caption 和 modification text 推理目标图像描述。这种流程有两个问题：第一，captioner…"
 category: "papers"
 date: "2026-07-09"
 updated: "2026-07-09"

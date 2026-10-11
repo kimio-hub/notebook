@@ -4,7 +4,7 @@ tags:
   - cir
   - multimodal
   - reasoning
-description: "> 论文状态：ICLR 2026 withdrawn submission, OpenReview > 方法名：CoRR, Chain of Reflective Composed Image Retrieval > 任务：Zero-Shot Composed Image Retrieval, ZS-CIR > 核心关…"
+description: "这篇论文研究 zero-shot composed image retrieval：给定一张参考图像和一段修改文本，在没有任务专门训练的情况下，从图像库中检索修改后的目标图像。已有方法通常先用 MLLM/LLM 把「参考图像 + 修改文本」改写成目标图像 caption，再用 CLIP 这类 embedding mod…"
 category: "papers"
 date: "2026-07-09"
 updated: "2026-07-09"

@@ -1,61 +1,86 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro"
-import NoteCard from "../components/NoteCard.astro"
+import Cover from "../components/Cover.astro"
+import NoteEntry from "../components/NoteEntry.astro"
 import type { Locale } from "../i18n/config"
 import { localizePath, t } from "../i18n/utils"
-import { getPublishedNotes } from "../lib/notes"
+import { categoryLabel, getPublishedNotes, noteCategories, type NoteCategory } from "../lib/notes"
 
 interface Props {
   lang: Locale
-  category?: "basics" | "papers"
+  category?: NoteCategory
 }
 
 const { lang, category } = Astro.props
 const all = await getPublishedNotes()
 const notes = category ? all.filter((n) => n.data.category === category) : all
-const basicsCount = all.filter((n) => n.data.category === "basics").length
-const papersCount = all.filter((n) => n.data.category === "papers").length
 
-const title = category === "basics"
-  ? t(lang, "notes.basicsTitle")
-  : category === "papers"
-    ? t(lang, "notes.papersTitle")
-    : t(lang, "notes.title")
+const title = category ? categoryLabel(category, lang) : t(lang, "notes.title")
+const intro = category ? t(lang, `notes.intro.${category}`) : t(lang, "notes.intro")
 
-const intro = category === "basics"
-  ? t(lang, "notes.basicsIntro")
-  : category === "papers"
-    ? t(lang, "notes.papersIntro")
-    : t(lang, "notes.intro")
+const years = new Map<string, typeof notes>()
+for (const note of notes) {
+  const year = String((note.data.updated ?? note.data.date)?.getUTCFullYear() ?? "—")
+  years.set(year, [...(years.get(year) ?? []), note])
+}
+
+const tabs = [
+  { href: "/notes/", label: t(lang, "notes.all"), count: all.length, active: !category, cat: undefined },
+  ...noteCategories.map((cat) => ({
+    href: `/notes/${cat}/`,
+    label: categoryLabel(cat, lang),
+    count: all.filter((n) => n.data.category === cat).length,
+    active: category === cat,
+    cat,
+  })),
+]
 ---
 
-<BaseLayout lang={lang} title={title} description={t(lang, "notes.desc")}>
-  <header class="page-intro">
-    <h1>{title}</h1>
-    <p>{intro}</p>
-  </header>
+<BaseLayout lang={lang} title={title} description={category ? intro : t(lang, "notes.desc")}>
+  <div class="container page">
+    <header class="page-header with-art">
+      <div>
+        <p class="eyebrow">{category ? <a href={localizePath("/notes/", lang)}>{t(lang, "nav.notes")}</a> : t(lang, "notes.eyebrow")}</p>
+        <h1>{title}</h1>
+        <p class="intro">{intro}</p>
+      </div>
+      <div class="cat-mosaic" aria-hidden="true">
+        {
+          noteCategories.map((cat) => (
+            <a href={localizePath(`/notes/${cat}/`, lang)} tabindex="-1" class:list={{ dim: category && category !== cat }}>
+              <Cover seed={`mosaic-${cat}`} kind={cat} width={200} height={150} />
+              <span>{categoryLabel(cat, lang)}</span>
+            </a>
+          ))
+        }
+      </div>
+    </header>
 
-  {
-    lang === "en" && (
-      <p class="panel about-panel" style="margin-bottom:1rem;padding:0.85rem 1rem;font-size:0.9rem;color:var(--muted);">
-        {t(lang, "notes.contentLangNote")}
-      </p>
-    )
-  }
+    {lang === "en" && <p class="lang-note">{t(lang, "notes.contentLangNote")}</p>}
 
-  <div class="filter-bar" aria-label={t(lang, "notes.filterAria")}>
-    <a href={localizePath("/notes/", lang)} class={!category ? "active" : undefined}>
-      {t(lang, "notes.all")} ({all.length})
-    </a>
-    <a href={localizePath("/notes/basics/", lang)} class={category === "basics" ? "active" : undefined}>
-      {t(lang, "notes.basics")} ({basicsCount})
-    </a>
-    <a href={localizePath("/notes/papers/", lang)} class={category === "papers" ? "active" : undefined}>
-      {t(lang, "notes.papers")} ({papersCount})
-    </a>
-  </div>
+    <nav class="tabs" aria-label={t(lang, "notes.filterAria")}>
+      {
+        tabs.map((tab) => (
+          <a href={localizePath(tab.href, lang)} aria-current={tab.active ? "page" : undefined}>
+            {tab.cat && <span class="cat-dot" data-cat={tab.cat} aria-hidden="true" />}
+            {tab.label}
+            <span class="count">{tab.count}</span>
+          </a>
+        ))
+      }
+    </nav>
 
-  <div class="card-grid">
-    {notes.map((note) => <NoteCard note={note} lang={lang} />)}
+    {
+      [...years.entries()].map(([year, items]) => (
+        <section class="year-group" aria-labelledby={`year-${year}`}>
+          <h2 class="year-label" id={`year-${year}`}>{year}</h2>
+          <ul class="entry-list">
+            {items.map((note) => (
+              <NoteEntry note={note} lang={lang} kicker={!category} date="day" thumb />
+            ))}
+          </ul>
+        </section>
+      ))
+    }
   </div>
 </BaseLayout>

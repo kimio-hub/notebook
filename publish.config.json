@@ -5,16 +5,24 @@
   "exclude": [".claude/**", "**/*.pdf", "**/*.pptx"],
   "folderPages": {
     "": {
-      "title": "全部笔记",
-      "description": "公开学习笔记入口：基础概念与论文精读。"
+      "title": "全部文章",
+      "description": "公开写作入口：研究长文、论文精读、课程笔记与基础概念。"
+    },
+    "blog": {
+      "title": "研究长文",
+      "description": "围绕一个问题展开的长篇梳理与技术报告解读。"
+    },
+    "papers": {
+      "title": "论文精读",
+      "description": "单篇论文的阅读笔记：问题、方法、为什么有效。"
+    },
+    "courses": {
+      "title": "课程笔记",
+      "description": "Stanford CS336 等课程的系统笔记。"
     },
     "basics": {
       "title": "基础笔记",
       "description": "强化学习与大语言模型的基础概念。"
-    },
-    "papers": {
-      "title": "论文精读",
-      "description": "论文阅读笔记：推理、多模态、博弈论等。"
     }
   }
 }

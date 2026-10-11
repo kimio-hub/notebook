@@ -1,14 +1,16 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro"
-import TimelineItem from "../components/TimelineItem.astro"
-import { changelog, type ChangelogItem } from "../data/changelog"
+import {
+  changelog,
+  changelogHref,
+  changelogSummary,
+  changelogTitle,
+  typeLabel,
+  type ChangelogItem,
+} from "../data/changelog"
 import type { Locale } from "../i18n/config"
 import { t } from "../i18n/utils"
-import {
-  categoryLabel,
-  formatDateShort,
-  getPublishedNotes,
-} from "../lib/notes"
+import { categoryLabel, formatDateShort, getPublishedNotes } from "../lib/notes"
 
 interface Props {
   lang: Locale
@@ -21,101 +23,87 @@ const noteItems: ChangelogItem[] = notes.map((note) => ({
   date: formatDateShort(note.data.updated ?? note.data.date) || "2026-01-01",
   title: note.data.title,
   titleEn: note.data.title,
-  summary: `${categoryLabel(note.data.category, lang)}${
-    note.data.tags?.length ? ` · ${note.data.tags.slice(0, 4).join(" / ")}` : ""
-  }`,
-  summaryEn: `${categoryLabel(note.data.category, "en")}${
-    note.data.tags?.length ? ` · ${note.data.tags.slice(0, 4).join(" / ")}` : ""
-  }`,
+  summary: `${categoryLabel(note.data.category, "zh")}${note.data.series ? ` · ${note.data.series}` : ""}`,
+  summaryEn: `${categoryLabel(note.data.category, "en")}${note.data.series ? ` · ${note.data.series}` : ""}`,
   type: "note",
   href: `/notes/${note.id}/`,
 }))
 
 const all = [...changelog, ...noteItems].sort((a, b) => b.date.localeCompare(a.date))
+const years = new Map<string, ChangelogItem[]>()
+for (const item of all) years.set(item.date.slice(0, 4), [...(years.get(item.date.slice(0, 4)) ?? []), item])
 
-const counts = {
-  all: all.length,
-  site: all.filter((i) => i.type === "site").length,
-  note: all.filter((i) => i.type === "note").length,
-  project: all.filter((i) => i.type === "project").length,
-}
+const filters = [
+  { key: "all", label: t(lang, "updates.all"), count: all.length },
+  ...(["site", "note", "project"] as const).map((key) => ({
+    key,
+    label: t(lang, `updates.${key}`),
+    count: all.filter((i) => i.type === key).length,
+  })),
+]
 ---
 
 <BaseLayout lang={lang} title={t(lang, "updates.title")} description={t(lang, "updates.desc")}>
-  <header class="page-intro">
-    <h1>{t(lang, "updates.title")}</h1>
-    <p>{t(lang, "updates.intro")}</p>
-  </header>
+  <div class="container page">
+    <header class="page-header">
+      <p class="eyebrow">{t(lang, "updates.eyebrow")}</p>
+      <h1>{t(lang, "updates.title")}</h1>
+      <p class="intro">{t(lang, "updates.intro")}</p>
+    </header>
 
-  <div
-    class="hero-side"
-    style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:0.75rem;margin-bottom:1.4rem;"
-  >
-    <div class="panel stat-card">
-      <div class="label">{t(lang, "updates.all")}</div>
-      <div class="value">{counts.all}</div>
+    <div class="tabs" id="update-filters" role="group" aria-label={t(lang, "updates.filterAria")}>
+      {
+        filters.map((f) => (
+          <button type="button" data-filter={f.key} aria-pressed={f.key === "all" ? "true" : "false"}>
+            {f.label}
+            <span class="count">{f.count}</span>
+          </button>
+        ))
+      }
     </div>
-    <div class="panel stat-card">
-      <div class="label">{t(lang, "updates.site")}</div>
-      <div class="value">{counts.site}</div>
-    </div>
-    <div class="panel stat-card">
-      <div class="label">{t(lang, "updates.note")}</div>
-      <div class="value">{counts.note}</div>
-    </div>
-  </div>
 
-  <div class="filter-bar" id="update-filters" aria-label={t(lang, "updates.filterAria")}>
-    <button type="button" class="filter-btn active" data-filter="all">{t(lang, "updates.all")}</button>
-    <button type="button" class="filter-btn" data-filter="site">{t(lang, "updates.site")}</button>
-    <button type="button" class="filter-btn" data-filter="note">{t(lang, "updates.note")}</button>
-    <button type="button" class="filter-btn" data-filter="project">{t(lang, "updates.project")}</button>
-  </div>
+    {
+      [...years.entries()].map(([year, items]) => (
+        <section class="year-group" data-year-group>
+          <h2 class="year-label">{year}</h2>
+          <ul class="entry-list">
+            {items.map((item) => {
+              const href = changelogHref(item, lang)
+              return (
+                <li class="entry" data-type={item.type}>
+                  <time class="entry-date" datetime={item.date}>{item.date.slice(5)}</time>
+                  <div>
+                    <p class="entry-kicker">{typeLabel(item.type, lang)}</p>
+                    <h3 class="entry-title">{href ? <a href={href}>{changelogTitle(item, lang)}</a> : changelogTitle(item, lang)}</h3>
+                    <p class="entry-dek">{changelogSummary(item, lang)}</p>
+                  </div>
+                </li>
+              )
+            })}
+          </ul>
+        </section>
+      ))
+    }
 
-  <div class="timeline" id="update-timeline">
-    {all.map((item) => <TimelineItem item={item} lang={lang} />)}
+    <p class="page-foot">{t(lang, "updates.hint")}</p>
   </div>
-
-  <p style="margin-top: 1.5rem; color: var(--muted); font-size: 0.9rem;">
-    {t(lang, "updates.hint")}
-  </p>
 </BaseLayout>
-
-<style>
-  .filter-btn {
-    padding: 0.4rem 0.85rem;
-    border-radius: 999px;
-    border: 1px solid var(--line);
-    background: var(--bg-elevated);
-    color: var(--ink-soft);
-    font-size: 0.86rem;
-    font-weight: 700;
-    cursor: pointer;
-    font-family: inherit;
-  }
-  .filter-btn:hover,
-  .filter-btn.active {
-    background: var(--brand-soft);
-    border-color: color-mix(in srgb, var(--brand) 35%, var(--line));
-    color: var(--brand);
-  }
-</style>
 
 <script>
   const bar = document.getElementById("update-filters")
-  const items = Array.from(document.querySelectorAll<HTMLElement>("#update-timeline .timeline-item"))
+  const items = Array.from(document.querySelectorAll<HTMLElement>("[data-year-group] .entry"))
+  const groups = Array.from(document.querySelectorAll<HTMLElement>("[data-year-group]"))
 
   bar?.addEventListener("click", (event) => {
-    const target = event.target as HTMLElement
-    if (!(target instanceof HTMLButtonElement)) return
+    const target = (event.target as HTMLElement).closest("button")
+    if (!target) return
     const filter = target.dataset.filter ?? "all"
-
-    bar.querySelectorAll(".filter-btn").forEach((btn) => btn.classList.remove("active"))
-    target.classList.add("active")
-
+    bar.querySelectorAll("button").forEach((btn) => btn.setAttribute("aria-pressed", String(btn === target)))
     items.forEach((item) => {
-      const type = item.dataset.type
-      item.style.display = filter === "all" || type === filter ? "" : "none"
+      item.hidden = !(filter === "all" || item.dataset.type === filter)
+    })
+    groups.forEach((group) => {
+      group.hidden = !group.querySelector(".entry:not([hidden])")
     })
   })
 </script>

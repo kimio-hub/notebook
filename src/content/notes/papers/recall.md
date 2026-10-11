@@ -3,7 +3,7 @@ title: "ReCALL"
 tags:
   - cir
   - multimodal
-description: "> 论文：Tianyu Yang et al., ReCALL: Recalibrating Capability Degradation for MLLM-based Composed Image Retrieval, arXiv:2602.01639v2, Accepted to CVPR 2026 > 代码：ht…"
+description: "传统 dual-tower VLM 检索器在 CIR 上的问题是：图像和文本交互较浅，难以做细粒度组合推理。后来一些方法把生成式 MLLM 改造成检索器，用一个 embedding 表示「参考图像 + 修改文本」的组合查询，再和候选图像 embedding 做相似度匹配。"
 category: "papers"
 date: "2026-07-09"
 updated: "2026-07-09"

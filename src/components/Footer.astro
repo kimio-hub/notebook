@@ -1,6 +1,6 @@
 ---
 import type { Locale } from "../i18n/config"
-import { getNav, t } from "../i18n/utils"
+import { localizePath, t } from "../i18n/utils"
 import { site, siteTagline } from "../data/site"
 
 interface Props {
@@ -9,27 +9,23 @@ interface Props {
 
 const { lang } = Astro.props
 const year = new Date().getFullYear()
-const nav = getNav(lang)
 ---
 
 <footer class="site-footer">
   <div class="container inner">
     <div>
-      <strong style="color: var(--ink); font-family: var(--font-serif);">{site.name}</strong>
-      <div style="margin-top: 0.25rem;">{siteTagline(lang)}</div>
-      <div style="margin-top: 0.35rem;">{t(lang, "footer.built", { year })}</div>
+      <p class="footer-name">{site.name}</p>
+      <p class="footer-tagline">{siteTagline(lang)}</p>
     </div>
     <nav aria-label={t(lang, "nav.footer")}>
-      {nav.map((item) => <a href={item.href}>{item.label}</a>)}
-      <a href={site.github} target="_blank" rel="noopener noreferrer">{t(lang, "action.github")}</a>
-      {
-        site.zhihu && (
-          <a href={site.zhihu} target="_blank" rel="noopener noreferrer">
-            {t(lang, "action.zhihu")}
-          </a>
-        )
-      }
+      <a href={localizePath("/notes/", lang)}>{t(lang, "nav.notes")}</a>
+      <a href={localizePath("/projects/", lang)}>{t(lang, "nav.projects")}</a>
+      <a href={localizePath("/updates/", lang)}>{t(lang, "nav.updates")}</a>
+      <a href={localizePath("/friends/", lang)}>{t(lang, "nav.friends")}</a>
+      <a href={site.github} target="_blank" rel="noopener noreferrer">GitHub</a>
+      {site.zhihu && <a href={site.zhihu} target="_blank" rel="noopener noreferrer">{t(lang, "action.zhihu")}</a>}
       {site.email && <a href={`mailto:${site.email}`}>{t(lang, "action.email")}</a>}
     </nav>
   </div>
+  <div class="container footer-base">{t(lang, "footer.built", { year })}</div>
 </footer>

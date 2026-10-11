@@ -1,0 +1,67 @@
+---
+import Cover from "./Cover.astro"
+import {
+  isExternalHref,
+  projectDescription,
+  projectHref,
+  projectLinkLabel,
+  projectTitle,
+  statusLabel,
+  type Project,
+} from "../data/projects"
+import type { Locale } from "../i18n/config"
+import { t } from "../i18n/utils"
+
+interface Props {
+  project: Project
+  lang: Locale
+  /** Narrow layout for the home page: no date column, smaller art. */
+  compact?: boolean
+}
+
+const { project, lang, compact = false } = Astro.props
+const href = projectHref(project, lang)
+const external = isExternalHref(project.href)
+const extraLinks = project.links?.filter((link) => link.href !== project.href) ?? []
+const linkAttrs = (url: string) =>
+  isExternalHref(url) ? { target: "_blank", rel: "noopener noreferrer" } : {}
+---
+
+<li class:list={["entry", "project-entry", { compact }]}>
+  <a class="project-art" href={href} tabindex="-1" aria-hidden="true" {...linkAttrs(project.href)}>
+    <Cover seed={project.id} kind="project" width={200} height={200} />
+  </a>
+  <div>
+    <p class="entry-kicker">
+      <span class="status" data-status={project.status}>{statusLabel(project.status, lang)}</span>
+      {project.date && <span> · {project.date}</span>}
+    </p>
+    <h3 class="entry-title">
+      <a href={href} {...linkAttrs(project.href)}>{projectTitle(project, lang)}</a>
+    </h3>
+    <p class="entry-dek">{projectDescription(project, lang)}</p>
+    {
+      project.tags && project.tags.length > 0 && (
+        <p class="entry-meta">
+          <span class="tag-list">
+            {project.tags.map((tag) => (
+              <span>{tag}</span>
+            ))}
+          </span>
+        </p>
+      )
+    }
+    <div class="entry-links">
+      <a class="pill-link primary" href={href} {...linkAttrs(project.href)}>
+        {external ? t(lang, "projects.viewDetails") : t(lang, "projects.readReport")}
+      </a>
+      {
+        extraLinks.map((link) => (
+          <a class="pill-link" href={link.href} {...linkAttrs(link.href)}>
+            {projectLinkLabel(link, lang)}
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</li>

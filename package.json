@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "sync-notes": "node ./scripts/sync-notes.mjs",
+    "import-drafts": "node ./scripts/import-drafts.mjs",
     "dev": "npm run sync-notes && astro dev",
     "build": "npm run sync-notes && astro build",
     "preview": "astro preview",

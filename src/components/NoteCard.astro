@@ -1,35 +1,39 @@
 ---
+import Cover from "./Cover.astro"
 import type { Locale } from "../i18n/config"
+import { t } from "../i18n/utils"
 import type { NoteEntry } from "../lib/notes"
-import { categoryLabel, excerptFromBody, formatDateShort, noteHref } from "../lib/notes"
+import { categoryLabel, excerptFromBody, formatDateShort, noteHref, readingMinutes } from "../lib/notes"
 
 interface Props {
   note: NoteEntry
-  lang?: Locale
+  lang: Locale
+  /** "lead" = wide card with the cover beside the text. */
+  variant?: "lead" | "card"
 }
 
-const { note, lang = "zh" } = Astro.props
+const { note, lang, variant = "card" } = Astro.props
 const href = noteHref(note, lang)
-const date = note.data.updated ?? note.data.date
+const date = formatDateShort(note.data.updated ?? note.data.date)
 const summary = note.data.description ?? excerptFromBody(note.body)
+const lead = variant === "lead"
 ---
 
-<a class="note-card" href={href}>
-  <div class="meta">
-    <span class={`tag ${note.data.category === "papers" ? "tag-accent" : "tag-brand"}`}>
+<article class:list={["note-card", { lead }]} data-cat={note.data.category}>
+  <a class="note-card-art" href={href} tabindex="-1" aria-hidden="true">
+    <Cover seed={note.id} kind={note.data.category} width={lead ? 360 : 320} height={lead ? 270 : 180} />
+  </a>
+  <div class="note-card-body">
+    <p class="entry-kicker">
+      <span class="cat-dot" data-cat={note.data.category} aria-hidden="true" />
       {categoryLabel(note.data.category, lang)}
-    </span>
-    {date && <time datetime={formatDateShort(date)}>{formatDateShort(date)}</time>}
+      {note.data.series && ` · ${note.data.series}`}
+    </p>
+    <h3 class="note-card-title"><a href={href}>{note.data.title}</a></h3>
+    {summary && <p class="note-card-dek">{summary}</p>}
+    <p class="entry-meta">
+      <time datetime={date}>{date}</time>
+      <span>{t(lang, "notes.minutes", { n: readingMinutes(note.body) })}</span>
+    </p>
   </div>
-  <h3>{note.data.title}</h3>
-  {summary && <p>{summary}</p>}
-  {
-    note.data.tags?.length > 0 && (
-      <div class="tags">
-        {note.data.tags.slice(0, 4).map((tag) => (
-          <span class="tag">#{tag}</span>
-        ))}
-      </div>
-    )
-  }
-</a>
+</article>

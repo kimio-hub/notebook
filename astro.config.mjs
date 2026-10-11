@@ -16,8 +16,10 @@ export default defineConfig({
       remarkPlugins: [remarkMath],
       rehypePlugins: [rehypeKatex],
     }),
+    // Mermaid blocks stay as plain code and are rendered client-side (see BaseLayout).
+    syntaxHighlight: { type: "shiki", excludeLangs: ["math", "mermaid"] },
     shikiConfig: {
-      theme: "github-dark-dimmed",
+      themes: { light: "github-light", dark: "github-dark-dimmed" },
       wrap: true,
     },
   },

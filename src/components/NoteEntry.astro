@@ -1,0 +1,69 @@
+---
+import Cover from "./Cover.astro"
+import type { Locale } from "../i18n/config"
+import { t } from "../i18n/utils"
+import type { NoteEntry } from "../lib/notes"
+import { categoryLabel, excerptFromBody, formatDateShort, noteHref, readingMinutes } from "../lib/notes"
+
+interface Props {
+  note: NoteEntry
+  lang?: Locale
+  /** Show the category kicker (useful on mixed lists). */
+  kicker?: boolean
+  /** "full" = YYYY-MM-DD, "day" = MM-DD (inside a year group), "none" hides the date column. */
+  date?: "full" | "day" | "none"
+  headingLevel?: "h2" | "h3"
+  /** Show a small cover thumbnail beside the text. */
+  thumb?: boolean
+}
+
+const { note, lang = "zh", kicker = true, date: dateMode = "full", headingLevel = "h3", thumb = false } = Astro.props
+const Heading = headingLevel
+const href = noteHref(note, lang)
+const date = note.data.updated ?? note.data.date
+const iso = formatDateShort(date)
+const summary = note.data.description ?? excerptFromBody(note.body)
+const minutes = readingMinutes(note.body)
+---
+
+<li class:list={["entry", { "has-thumb": thumb }]}>
+  {
+    dateMode !== "none" && (
+      <time class="entry-date" datetime={iso}>
+        {dateMode === "day" ? iso.slice(5) : iso}
+      </time>
+    )
+  }
+  <div class="entry-body">
+    {
+      kicker && (
+        <p class="entry-kicker">
+          <span class="cat-dot" data-cat={note.data.category} aria-hidden="true" />
+          {categoryLabel(note.data.category, lang)}
+          {note.data.series && ` · ${note.data.series}`}
+        </p>
+      )
+    }
+    <Heading class="entry-title"><a href={href}>{note.data.title}</a></Heading>
+    {summary && <p class="entry-dek">{summary}</p>}
+    <p class="entry-meta">
+      <span>{t(lang, "notes.minutes", { n: minutes })}</span>
+      {
+        note.data.tags?.length > 0 && (
+          <span class="tag-list">
+            {note.data.tags.slice(0, 4).map((tag) => (
+              <span>{tag}</span>
+            ))}
+          </span>
+        )
+      }
+    </p>
+  </div>
+  {
+    thumb && (
+      <a class="entry-thumb" href={href} tabindex="-1" aria-hidden="true">
+        <Cover seed={note.id} kind={note.data.category} width={240} height={160} />
+      </a>
+    )
+  }
+</li>

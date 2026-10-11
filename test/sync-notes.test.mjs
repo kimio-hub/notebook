@@ -30,7 +30,14 @@ test("generates a readable description and preserves an authored one", () => {
     descriptionFromMarkdown("## 摘要\nA paragraph directly below its heading should be selected.\n\n$$x^2$$"),
     "A paragraph directly below its heading should be selected.",
   )
-
+  assert.equal(
+    descriptionFromMarkdown("> 论文：Demo Paper > 会议：CVPR 2025\n\nThe paper studies retrieval without labelled triplets."),
+    "The paper studies retrieval without labelled triplets.",
+  )
+  assert.equal(
+    descriptionFromMarkdown("> 论文：Only metadata here, nothing else to use"),
+    "论文：Only metadata here, nothing else to use",
+  )
 
   const withDescription = injectFrontmatter(source, { description })
   assert.match(withDescription, /^---\ntitle: Demo\ndescription: "This is the first useful paragraph/)

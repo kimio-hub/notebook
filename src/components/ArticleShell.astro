@@ -1,0 +1,141 @@
+---
+import type { MarkdownHeading } from "astro"
+import Cover from "./Cover.astro"
+import type { Locale } from "../i18n/config"
+import { t } from "../i18n/utils"
+import { formatDate } from "../lib/notes"
+
+interface Crumb {
+  label: string
+  href?: string
+  cat?: string
+}
+
+interface Props {
+  lang: Locale
+  title: string
+  description?: string
+  crumbs: Crumb[]
+  date?: Date
+  minutes?: number
+  tags?: string[]
+  headings: MarkdownHeading[]
+  /** Generated banner art under the header. */
+  cover?: { seed: string; kind: string }
+}
+
+const { lang, title, description, crumbs, date, minutes, tags = [], headings, cover } = Astro.props
+const toc = headings.filter((h) => h.depth >= 2 && h.depth <= 3)
+---
+
+<article>
+  <header class="article-header">
+    <p class="eyebrow">
+      {
+        crumbs.map((crumb, index) => (
+          <>
+            {index > 0 && <span aria-hidden="true"> / </span>}
+            {crumb.cat && <span class="cat-dot" data-cat={crumb.cat} aria-hidden="true" />}
+            {crumb.href ? <a href={crumb.href}>{crumb.label}</a> : <span>{crumb.label}</span>}
+          </>
+        ))
+      }
+    </p>
+    <h1 class="article-title">{title}</h1>
+    {description && <p class="article-dek">{description}</p>}
+    <div class="article-meta">
+      {date && <time datetime={date.toISOString()}>{formatDate(date, lang)}</time>}
+      {minutes && <span>{t(lang, "notes.minutes", { n: minutes })}</span>}
+      {
+        tags.length > 0 && (
+          <span class="tag-list">
+            {tags.map((tag) => (
+              <span>{tag}</span>
+            ))}
+          </span>
+        )
+      }
+    </div>
+    {lang === "en" && <p class="lang-note" style="margin-top:24px">{t(lang, "notes.contentLangNote")}</p>}
+  </header>
+
+  {
+    cover && (
+      <div class="article-art">
+        <Cover seed={cover.seed} kind={cover.kind} width={880} height={200} />
+      </div>
+    )
+  }
+
+  <div class="article-body">
+    {
+      toc.length > 0 && (
+        <>
+          <aside class="toc" aria-label={t(lang, "notes.toc")}>
+            <div class="toc-inner">
+              <p class="toc-label">{t(lang, "notes.toc")}</p>
+              <ol>
+                {toc.map((h) => (
+                  <li class={`depth-${h.depth}`}>
+                    <a href={`#${h.slug}`}>{h.text}</a>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </aside>
+          <details class="toc-mobile">
+            <summary>{t(lang, "notes.toc")}</summary>
+            <ol>
+              {toc.map((h) => (
+                <li class={`depth-${h.depth}`}>
+                  <a href={`#${h.slug}`}>{h.text}</a>
+                </li>
+              ))}
+            </ol>
+          </details>
+        </>
+      )
+    }
+    <div class="prose">
+      <slot />
+    </div>
+  </div>
+
+  <slot name="footer" />
+</article>
+
+<script is:inline>
+  // Highlight the TOC entry for the section currently in view.
+  ;(() => {
+    const links = [...document.querySelectorAll(".toc a[href^='#']")]
+    if (!links.length || !("IntersectionObserver" in window)) return
+    const byId = new Map(links.map((a) => [decodeURIComponent(a.getAttribute("href").slice(1)), a]))
+    const visible = new Set()
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) visible.add(entry.target.id)
+          else visible.delete(entry.target.id)
+        }
+        const headings = [...byId.keys()].map((id) => document.getElementById(id)).filter(Boolean)
+        const current = headings.find((h) => visible.has(h.id))
+        if (!current) return
+        links.forEach((a) => a.removeAttribute("aria-current"))
+        const active = byId.get(current.id)
+        active?.setAttribute("aria-current", "true")
+        const box = active?.closest(".toc-inner")
+        if (box && active) {
+          const top = active.offsetTop
+          if (top < box.scrollTop || top > box.scrollTop + box.clientHeight - 40) {
+            box.scrollTop = top - box.clientHeight / 3
+          }
+        }
+      },
+      { rootMargin: "-80px 0px -65% 0px" },
+    )
+    for (const id of byId.keys()) {
+      const el = document.getElementById(id)
+      if (el) observer.observe(el)
+    }
+  })()
+</script>

@@ -4,6 +4,10 @@ import { t } from "../i18n/ui"
 import { localizePath } from "../i18n/utils"
 
 export type NoteEntry = CollectionEntry<"notes">
+export type NoteCategory = Exclude<NoteEntry["data"]["category"], "other">
+
+/** Display order for categories across the site. */
+export const noteCategories: NoteCategory[] = ["blog", "papers", "courses", "basics"]
 
 export function noteHref(entry: NoteEntry, lang: Locale = "zh"): string {
   const bare = `/notes/${entry.id.replace(/\/index$/, "")}/`
@@ -25,9 +29,17 @@ export function formatDateShort(date?: Date): string {
 }
 
 export function categoryLabel(category: string, lang: Locale = "zh"): string {
-  if (category === "basics") return t(lang, "notes.categoryBasics")
-  if (category === "papers") return t(lang, "notes.categoryPapers")
-  return t(lang, "notes.categoryOther")
+  if ((noteCategories as string[]).includes(category)) return t(lang, `notes.category.${category}`)
+  return t(lang, "notes.category.other")
+}
+
+/** Rough reading time: ~400 CJK characters or ~220 Latin words per minute. */
+export function readingMinutes(body?: string): number {
+  if (!body) return 1
+  const text = body.replace(/```[\s\S]*?```/g, " ").replace(/\$\$[\s\S]*?\$\$/g, " ")
+  const cjk = (text.match(/[㐀-鿿]/g) ?? []).length
+  const words = (text.replace(/[㐀-鿿]/g, " ").match(/[A-Za-z0-9]+/g) ?? []).length
+  return Math.max(1, Math.round(cjk / 400 + words / 220))
 }
 
 export async function getPublishedNotes(): Promise<NoteEntry[]> {
@@ -41,7 +53,7 @@ export async function getPublishedNotes(): Promise<NoteEntry[]> {
   return notes.sort((a, b) => {
     const da = (a.data.updated ?? a.data.date)?.getTime() ?? 0
     const db = (b.data.updated ?? b.data.date)?.getTime() ?? 0
-    return db - da
+    return db - da || a.id.localeCompare(b.id)
   })
 }
 

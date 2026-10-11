@@ -15,6 +15,42 @@ export type ChangelogItem = {
 
 export const changelog: ChangelogItem[] = [
   {
+    date: "2026-10-11",
+    title: "主页改版为学术个人主页",
+    titleEn: "Redesigned as an academic homepage",
+    summary: "个人卡片、内容统计、带封面插画的精选文章、动态时间线与分类笔记索引；文章页改为衬线阅读栏、侧边目录与带框图注。",
+    summaryEn: "Profile card, content stats, illustrated selected writing, a news timeline, and a notes index by category; articles get a serif reading column, side TOC, and framed figures.",
+    type: "site",
+    href: "/",
+  },
+  {
+    date: "2026-10-11",
+    title: "发布 CS336 课程笔记系列",
+    titleEn: "CS336 course notes published",
+    summary: "架构、注意力与 MoE、GPU、Triton、分布式并行、scaling laws、推理等 10 篇笔记。",
+    summaryEn: "Ten notes covering architecture, attention and MoE, GPUs, Triton, parallelism, scaling laws, and inference.",
+    type: "note",
+    href: "/notes/courses/",
+  },
+  {
+    date: "2026-10-11",
+    title: "新增研究长文与论文精读",
+    titleEn: "New essays and paper notes",
+    summary: "Frontier RL 算法、OPD 脉络、Kimi K3、DeepSeek-V4 与 MAI-Thinking-1、更新尺度失配；以及 ISO、SEED、DPO 精读。",
+    summaryEn: "Essays on frontier RL algorithms, on-policy distillation, Kimi K3, DeepSeek-V4 & MAI-Thinking-1, and update-scale mismatch; notes on ISO, SEED, DPO.",
+    type: "note",
+    href: "/notes/blog/",
+  },
+  {
+    date: "2026-09-14",
+    title: "发布 Marin 8B 训练复盘",
+    titleEn: "Marin 8B training retrospective",
+    summary: "沿六个训练阶段读懂一次 12.7T tokens 的开源训练：冷却、EMA 与失败分支的诊断。",
+    summaryEn: "Reading a 12.7T-token open training run through its six phases: cooldowns, EMA, and diagnosing failed branches.",
+    type: "note",
+    href: "/notes/papers/marin-8b-training/",
+  },
+  {
     date: "2026-07-10",
     title: "上线中英文切换",
     titleEn: "Chinese / English language switch",

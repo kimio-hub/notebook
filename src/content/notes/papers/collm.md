@@ -4,7 +4,7 @@ tags:
   - cir
   - multimodal
   - llm
-description: "> 论文：CoLLM: A Large Language Model for Composed Image Retrieval > 会议：CVPR 2025 > 项目页：collm-cvpr25.github.io > 任务：Composed Image Retrieval, CIR > 核心关键词：LLM embed…"
+description: "CoLLM 研究的是如何在缺少人工标注 CIR triplets 的情况下训练一个强 CIR 检索模型。传统 CIR 需要 三元组，但这类数据昂贵且规模有限；zero-shot 方法虽然避免标注，但常常依赖浅层 adapter、embedding 插值或中间 caption，难以处理复杂修改文本。CoLLM 的思路是：…"
 category: "papers"
 date: "2026-07-09"
 updated: "2026-07-09"

@@ -12,6 +12,7 @@ interface Props {
   description?: string
   image?: string
   lang?: Locale
+  type?: "website" | "article"
 }
 
 const lang = Astro.props.lang ?? getLocaleFromUrl(Astro.url)
@@ -19,6 +20,7 @@ const {
   title = site.title,
   description = siteDescription(lang),
   image = "/avatar.webp",
+  type = "website",
 } = Astro.props
 
 const pageTitle =
@@ -36,9 +38,11 @@ const canonical = new URL(Astro.url.pathname, site.url).toString()
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
     <meta name="author" content={site.author} />
+    <meta name="theme-color" content="#faf9f5" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#1f1e1d" media="(prefers-color-scheme: dark)" />
     <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/webp" href="/avatar.webp" />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={type} />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
@@ -50,7 +54,7 @@ const canonical = new URL(Astro.url.pathname, site.url).toString()
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=JetBrains+Mono:wght@400;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Noto+Serif+SC:wght@400;600&family=Schibsted+Grotesk:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap"
       rel="stylesheet"
     />
     <title>{pageTitle}</title>
@@ -71,11 +75,10 @@ const canonical = new URL(Astro.url.pathname, site.url).toString()
     </script>
   </head>
   <body>
+    <a class="skip-link" href="#main">{t(lang, "action.skip")}</a>
     <Header lang={lang} />
-    <main class="site-main">
-      <div class="container">
-        <slot />
-      </div>
+    <main class="site-main" id="main">
+      <slot />
     </main>
     <Footer lang={lang} />
     <script is:inline define:vars={{ menuOpen: t(lang, "action.menuOpen"), menuClose: t(lang, "action.menuClose") }}>
@@ -97,6 +100,7 @@ const canonical = new URL(Astro.url.pathname, site.url).toString()
           } catch {
             // The visual toggle still works when persistence is unavailable.
           }
+          window.dispatchEvent(new Event("kimio-theme"))
         })
 
         const toggle = document.getElementById("menu-toggle")
@@ -133,6 +137,41 @@ const canonical = new URL(Astro.url.pathname, site.url).toString()
         window.matchMedia("(min-width: 861px)").addEventListener("change", (event) => {
           if (event.matches) setMenuOpen(false)
         })
+      })()
+    </script>
+    <script is:inline>
+      // Mermaid blocks are left unhighlighted at build time; render them only on pages that have one.
+      ;(() => {
+        const blocks = [...document.querySelectorAll("pre > code.language-mermaid")]
+        if (!blocks.length) return
+        const sources = blocks.map((code) => {
+          const pre = code.parentElement
+          pre.classList.add("mermaid-source")
+          return { pre, text: code.textContent ?? "" }
+        })
+        let mermaid
+        const render = async () => {
+          mermaid ??= (await import("https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs")).default
+          mermaid.initialize({
+            startOnLoad: false,
+            theme: document.documentElement.classList.contains("dark") ? "dark" : "neutral",
+            fontFamily: "Schibsted Grotesk, PingFang SC, Microsoft YaHei, sans-serif",
+          })
+          for (const [index, source] of sources.entries()) {
+            try {
+              const { svg } = await mermaid.render(`mermaid-${index}-${Date.now()}`, source.text)
+              const figure = document.createElement("div")
+              figure.className = "mermaid"
+              figure.innerHTML = svg
+              source.pre.replaceWith(figure)
+              source.pre = figure
+            } catch {
+              // Leave the source visible if rendering fails.
+            }
+          }
+        }
+        render()
+        window.addEventListener("kimio-theme", render)
       })()
     </script>
   </body>

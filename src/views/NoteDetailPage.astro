@@ -1,128 +1,68 @@
 ---
 import { render } from "astro:content"
 import BaseLayout from "../layouts/BaseLayout.astro"
+import ArticleShell from "../components/ArticleShell.astro"
+import NoteEntry from "../components/NoteEntry.astro"
 import type { Locale } from "../i18n/config"
 import { localizePath, t } from "../i18n/utils"
-import {
-  categoryLabel,
-  formatDate,
-  type NoteEntry,
-} from "../lib/notes"
+import { categoryLabel, getPublishedNotes, readingMinutes, type NoteEntry as Note } from "../lib/notes"
 
 interface Props {
   lang: Locale
-  note: NoteEntry
+  note: Note
 }
 
 const { lang, note } = Astro.props
 const { Content, headings } = await render(note)
+const { category, series } = note.data
 const date = note.data.updated ?? note.data.date
-const toc = headings.filter((h) => h.depth >= 2 && h.depth <= 3)
-const isFeature = note.data.feature
+
+const siblings = (await getPublishedNotes()).filter((n) => n.id !== note.id && n.data.category === category)
+const related = [
+  ...siblings.filter((n) => series && n.data.series === series),
+  ...siblings.filter((n) => !series || n.data.series !== series),
+].slice(0, 3)
+
+const crumbs = [
+  { label: t(lang, "nav.notes"), href: localizePath("/notes/", lang) },
+  {
+    label: categoryLabel(category, lang),
+    href: category === "other" ? undefined : localizePath(`/notes/${category}/`, lang),
+    cat: category,
+  },
+  ...(series ? [{ label: series }] : []),
+]
 ---
 
-<BaseLayout
-  lang={lang}
-  title={note.data.title}
-  description={note.data.description ?? `${note.data.title} · Kimio`}
->
-  {
-    lang === "en" && (
-      <p class="panel about-panel" style="margin-bottom:1rem;padding:0.85rem 1rem;font-size:0.9rem;color:var(--muted);">
-        {t(lang, "notes.contentLangNote")}
-      </p>
-    )
-  }
-  {
-    isFeature && (
-      <header class="note-feature-hero">
-        <div class="note-feature-art" aria-hidden="true">
-          <svg viewBox="0 0 820 430" role="img">
-            <defs>
-              <filter id="feature-rough">
-                <feTurbulence type="fractalNoise" baseFrequency=".025" numOctaves="2" result="noise" />
-                <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" />
-              </filter>
-              <linearGradient id="feature-line" x1="0" x2="1">
-                <stop stop-color="#0f6b63" />
-                <stop offset=".48" stop-color="#4f83a6" />
-                <stop offset=".72" stop-color="#c45c16" />
-                <stop offset="1" stop-color="#8069a5" />
-              </linearGradient>
-            </defs>
-            <g fill="none" stroke-linecap="round" filter="url(#feature-rough)">
-              <path d="M-20 286 C100 292 165 254 235 260 S352 307 433 251 S575 195 850 145" stroke="url(#feature-line)" stroke-width="13" opacity=".17" />
-              <path d="M-20 286 C100 292 165 254 235 260 S352 307 433 251 S575 195 850 145" stroke="url(#feature-line)" stroke-width="3" />
-              <path d="M150 268 C210 245 245 173 302 125 S395 82 468 65" stroke="#c65f58" stroke-width="2.5" stroke-dasharray="7 11" />
-              <path d="M409 262 C468 294 507 357 580 370 S707 358 846 410" stroke="#92715b" stroke-width="2.5" stroke-dasharray="6 10" />
-            </g>
-            <g font-family="system-ui,sans-serif" font-size="12" fill="currentColor" opacity=".7">
-              <text x="40" y="316">Kestrel</text><text x="210" y="294">Ocelot</text><text x="377" y="295">Jellyfish</text><text x="535" y="240">Phoenix</text><text x="690" y="190">Starling</text><text x="281" y="111">诊断分支</text>
-            </g>
-          </svg>
-        </div>
-        <div class="note-feature-copy">
-          <p class="note-feature-kicker">一个开放模型的训练复盘</p>
-          <h1>{note.data.title}</h1>
-          {note.data.description && <p>{note.data.description}</p>}
-          <div class="note-feature-stats" aria-label="文章概要">
-            <span><strong>12.7T</strong> tokens</span>
-            <span><strong>6</strong> 个主线阶段</span>
-            <span><strong>2</strong> 条诊断分支</span>
-          </div>
-        </div>
-      </header>
-    )
-  }
-  <div class:list={["note-layout", isFeature && "note-layout--feature"]}>
-    <article class:list={["article-card", isFeature && "article-card--feature"]}>
-      <div class="article-meta">
-        <a href={localizePath("/notes/", lang)}>{t(lang, "nav.notes")}</a>
-        <span>·</span>
-        <a href={localizePath(`/notes/${note.data.category}/`, lang)}>
-          {categoryLabel(note.data.category, lang)}
-        </a>
-        {
-          date && (
-            <>
-              <span>·</span>
-              <time datetime={date.toISOString()}>{formatDate(date, lang)}</time>
-            </>
-          )
-        }
-      </div>
-      {!isFeature && <h1>{note.data.title}</h1>}
+<BaseLayout lang={lang} title={note.data.title} description={note.data.description ?? note.data.title} type="article">
+  <ArticleShell
+    lang={lang}
+    title={note.data.title}
+    description={note.data.description}
+    crumbs={crumbs}
+    date={date}
+    minutes={readingMinutes(note.body)}
+    tags={note.data.tags}
+    headings={headings}
+    cover={{ seed: note.id, kind: category }}
+  >
+    <Content />
+    <footer class="article-footer" slot="footer">
       {
-        note.data.tags?.length > 0 && (
-          <div class="tag-row" style="margin: 0 0 1.2rem;">
-            {note.data.tags.map((tag) => (
-              <span class="tag">#{tag}</span>
-            ))}
-          </div>
+        related.length > 0 && (
+          <>
+            <div class="section-head">
+              <h2>{t(lang, "notes.more", { category: categoryLabel(category, lang) })}</h2>
+            </div>
+            <ul class="entry-list">
+              {related.map((n) => (
+                <NoteEntry note={n} lang={lang} kicker={false} date="none" />
+              ))}
+            </ul>
+          </>
         )
       }
-      <div class="prose">
-        <Content />
-      </div>
-    </article>
-
-    {
-      toc.length > 0 && (
-        <aside class="toc" aria-label={t(lang, "notes.toc")}>
-          <h2>{t(lang, "notes.toc")}</h2>
-          <ul>
-            {toc.map((h) => (
-              <li style={`padding-left: ${(h.depth - 2) * 0.75}rem`}>
-                <a href={`#${h.slug}`}>{h.text}</a>
-              </li>
-            ))}
-          </ul>
-        </aside>
-      )
-    }
-  </div>
-
-  <p style="margin-top: 1.5rem;">
-    <a class="btn btn-ghost" href={localizePath("/notes/", lang)}>{t(lang, "notes.back")}</a>
-  </p>
+      <a class="pill-link back-link" href={localizePath("/notes/", lang)}>{t(lang, "notes.back")}</a>
+    </footer>
+  </ArticleShell>
 </BaseLayout>
